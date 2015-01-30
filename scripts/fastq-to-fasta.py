@@ -17,6 +17,7 @@ Use '-h' for parameter help.
 import sys
 import argparse
 import screed
+import gzip
 
 
 def get_parser():
@@ -39,6 +40,7 @@ def get_parser():
 
 def main():
     args = get_parser().parse_args()
+    args.output = gzip.GzipFile(fileobj = args.output, mode = 'w');
     print >> sys.stderr, ('fastq from ', args.input_sequence)
 
     n_count = 0
