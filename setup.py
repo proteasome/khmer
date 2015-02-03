@@ -15,6 +15,7 @@ from os.path import join as path_join
 import shutil
 import subprocess
 import tempfile
+import bz2file as bz2
 
 from setuptools import setup
 from setuptools import Extension
