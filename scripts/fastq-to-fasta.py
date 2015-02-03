@@ -45,10 +45,10 @@ def get_parser():
 
 def main():
     args = get_parser().parse_args()
-#    if args.gzip:
-#        args.output = gzip.GzipFile(fileobj = args.output, mode = 'w');
-#    elif args.bzip:
-    args.output = bz2file.open(args.output, mode = 'w');
+    if args.gzip:
+        args.output = gzip.GzipFile(fileobj = args.output, mode = 'w');
+    elif args.bzip:
+        args.output = bz2file.open(args.output, mode = 'w');
     print >> sys.stderr, ('fastq from ', args.input_sequence)
 
     n_count = 0
