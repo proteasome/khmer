@@ -1610,8 +1610,6 @@ def test_fastq_to_fasta():
 
     args = [clean_infile, '--gzip', '-o', clean_outfile]
     (status, out, err) = utils.runscript(script, args, in_dir)
-    assert len(out.splitlines()) > 2
-    assert "0 lines dropped" in err
 
 
 def test_extract_long_sequences():
