@@ -19,6 +19,8 @@ import argparse
 import screed
 import gzip
 import bz2file
+from khmer.kfile import add_output_compression_type
+from khmer.kfile import enable_output_compression
 
 
 def get_parser():
@@ -36,19 +38,21 @@ def get_parser():
     parser.add_argument('-n', '--n_keep', default=False, action='store_true',
                         help='Option to drop reads containing \'N\'s in ' +
                         'input_sequence file.')
-    parser.add_argument('--gzip', default=False, action='store_true',
-                        help='Option to output as gzip')
-    parser.add_argument('--bzip', default=False, action='store_true',
-                        help='Option to output as bz2')
+    add_output_compression_type(parser)
+#    parser.add_argument('--gzip', default=False, action='store_true',
+#                        help='Option to output as gzip')
+#    parser.add_argument('--bzip', default=False, action='store_true',
+#                        help='Option to output as bz2')
     return parser
 
 
 def main():
     args = get_parser().parse_args()
-    if args.gzip:
-        args.output = gzip.GzipFile(fileobj = args.output, mode = 'w');
-    elif args.bzip:
-        args.output = bz2file.open(args.output, mode = 'w');
+    enable_output_compression(parser)
+#    if args.gzip:
+#        args.output = gzip.GzipFile(fileobj = args.output, mode = 'w');
+#    elif args.bzip:
+#        args.output = bz2file.open(args.output, mode = 'w');
     print >> sys.stderr, ('fastq from ', args.input_sequence)
 
     n_count = 0

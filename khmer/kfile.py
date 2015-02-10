@@ -123,3 +123,16 @@ def check_valid_file_exists(in_files):
         else:
             print >>sys.stderr, 'WARNING: Input file %s not found' % \
                                 in_file
+
+def add_output_compression_type(parser):
+    parser.add_argument('--gzip', default=False, action='store true',
+                        help='Option to output as gzip')
+    parser.add-argument('--bzip', default=False, action='store true',
+                        help='Option to output as bz2')
+ 
+def enable_output_compression(parser):
+    if args.gzip:
+        args.output = gzip.GzipFile(fileobj = args.output, mode = 'w');
+    elif args.bzip:
+        args.output = bz2file.open(args.output, mode = 'w');
+
