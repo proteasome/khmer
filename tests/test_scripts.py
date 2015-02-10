@@ -1608,6 +1608,8 @@ def test_fastq_to_fasta():
     assert len(out.splitlines()) > 2
     assert "4 lines dropped" in err
 
+    args = [clean_infile, '--gzip', '-o', n_outfile]
+
 
 def test_extract_long_sequences():
 
