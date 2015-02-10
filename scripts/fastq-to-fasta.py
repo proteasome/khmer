@@ -48,7 +48,7 @@ def get_parser():
 
 def main():
     args = get_parser().parse_args()
-    enable_output_compression(parser)
+    enable_output_compression(args)
 #    if args.gzip:
 #        args.output = gzip.GzipFile(fileobj = args.output, mode = 'w');
 #    elif args.bzip:
