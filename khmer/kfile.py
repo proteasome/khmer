@@ -130,7 +130,7 @@ def add_output_compression_type(parser):
     parser.add-argument('--bzip', default=False, action='store true',
                         help='Option to output as bz2')
  
-def enable_output_compression(parser):
+def enable_output_compression(args):
     if args.gzip:
         args.output = gzip.GzipFile(fileobj = args.output, mode = 'w');
     elif args.bzip:
