@@ -125,9 +125,9 @@ def check_valid_file_exists(in_files):
                                 in_file
 
 def add_output_compression_type(parser):
-    parser.add_argument('--gzip', default=False, action='store true',
+    parser.add_argument('--gzip', default=False, action='store_true',
                         help='Option to output as gzip')
-    parser.add-argument('--bzip', default=False, action='store true',
+    parser.add-argument('--bzip', default=False, action='store_true',
                         help='Option to output as bz2')
  
 def enable_output_compression(args):
