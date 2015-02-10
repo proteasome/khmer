@@ -12,6 +12,8 @@ File handling/checking utilities for command-line scripts.
 import os
 import sys
 from stat import S_ISBLK, S_ISFIFO
+import gzip
+import bz2file
 
 
 def check_file_status(file_path, force):
