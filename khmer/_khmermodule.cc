@@ -27,6 +27,15 @@
 using namespace khmer;
 
 //
+// Python 2/3 compatibility: PyInt and PyLong
+//
+
+#if (PY_MAJOR_VERSION >= 3)
+    #define PyInt_Check(arg) PyLong_Check(arg)
+    #define PyInt_AsLong(arg) PyLong_AsLong(arg)
+#endif
+
+//
 // Function necessary for Python loading:
 //
 
@@ -576,7 +585,7 @@ _init_ReadParser_Type( )
     // Place pair mode constants into class dictionary.
     int result;
 
-    PyObject * value = PyInt_FromLong( IParser:: PAIR_MODE_ALLOW_UNPAIRED );
+    PyObject * value = PyLong_FromLong( IParser:: PAIR_MODE_ALLOW_UNPAIRED );
     result = PyDict_SetItemString(cls_attrs_DICT,
                                   "PAIR_MODE_ALLOW_UNPAIRED", value);
     Py_XDECREF(value);
@@ -585,7 +594,7 @@ _init_ReadParser_Type( )
         return;
     }
 
-    value = PyInt_FromLong( IParser:: PAIR_MODE_IGNORE_UNPAIRED );
+    value = PyLong_FromLong( IParser:: PAIR_MODE_IGNORE_UNPAIRED );
     result = PyDict_SetItemString(cls_attrs_DICT,
                                   "PAIR_MODE_IGNORE_UNPAIRED", value );
     Py_XDECREF(value);
@@ -594,7 +603,7 @@ _init_ReadParser_Type( )
         return;
     }
 
-    value = PyInt_FromLong( IParser:: PAIR_MODE_ERROR_ON_UNPAIRED );
+    value = PyLong_FromLong( IParser:: PAIR_MODE_ERROR_ON_UNPAIRED );
     result = PyDict_SetItemString(cls_attrs_DICT,
                                   "PAIR_MODE_ERROR_ON_UNPAIRED", value);
     Py_XDECREF(value);
@@ -812,7 +821,7 @@ static PyObject * hash_count(PyObject * self, PyObject * args)
 
     counting->count(kmer);
 
-    return PyInt_FromLong(1);
+    return PyLong_FromLong(1);
 }
 
 static PyObject * hash_output_fasta_kmer_pos_freq(PyObject * self,
@@ -830,7 +839,7 @@ static PyObject * hash_output_fasta_kmer_pos_freq(PyObject * self,
 
     counting->output_fasta_kmer_pos_freq(infile, outfile);
 
-    return PyInt_FromLong(0);
+    return PyLong_FromLong(0);
 }
 
 static PyObject * hash_consume_fasta(PyObject * self, PyObject * args)
@@ -925,7 +934,7 @@ static PyObject * hash_consume(PyObject * self, PyObject * args)
     unsigned int n_consumed;
     n_consumed = counting->consume_string(long_str);
 
-    return PyInt_FromLong(n_consumed);
+    return PyLong_FromLong(n_consumed);
 }
 
 static PyObject * hash_get_min_count(PyObject * self, PyObject * args)
@@ -948,7 +957,7 @@ static PyObject * hash_get_min_count(PyObject * self, PyObject * args)
     BoundedCounterType c = counting->get_min_count(long_str);
     unsigned int N = c;
 
-    return PyInt_FromLong(N);
+    return PyLong_FromLong(N);
 }
 
 static PyObject * hash_get_max_count(PyObject * self, PyObject * args)
@@ -971,7 +980,7 @@ static PyObject * hash_get_max_count(PyObject * self, PyObject * args)
     BoundedCounterType c = counting->get_max_count(long_str);
     unsigned int N = c;
 
-    return PyInt_FromLong(N);
+    return PyLong_FromLong(N);
 }
 
 static PyObject * hash_get_median_count(PyObject * self, PyObject * args)
@@ -1052,7 +1061,7 @@ static PyObject * hash_get(PyObject * self, PyObject * args)
         count = counting->get_count(s.c_str());
     }
 
-    return PyInt_FromLong(count);
+    return PyLong_FromLong(count);
 }
 
 static PyObject * count_trim_on_abundance(PyObject * self, PyObject * args)
@@ -1145,7 +1154,7 @@ static PyObject * count_find_spectral_error_positions(PyObject * self,
         return NULL;
     }
     for (Py_ssize_t i = 0; i < posns_size; i++) {
-        PyList_SET_ITEM(x, i, PyInt_FromLong(posns[i]));
+        PyList_SET_ITEM(x, i, PyLong_FromLong(posns[i]));
     }
 
     return x;
@@ -1275,7 +1284,7 @@ static PyObject * hash_get_ksize(PyObject * self, PyObject * args)
 
     unsigned int k = counting->ksize();
 
-    return PyInt_FromLong(k);
+    return PyLong_FromLong(k);
 }
 
 static PyObject * hash_get_hashsizes(PyObject * self, PyObject * args)
@@ -1655,10 +1664,10 @@ static PyObject* _new_counting_hash(PyObject * self, PyObject * args)
     }
     for (Py_ssize_t i = 0; i < sizes_list_o_length; i++) {
         PyObject * size_o = PyList_GET_ITEM(sizes_list_o, i);
-        if (PyInt_Check(size_o)) {
-            sizes.push_back((HashIntoType) PyInt_AsLong(size_o));
-        } else if (PyLong_Check(size_o)) {
+        if (PyLong_Check(size_o)) {
             sizes.push_back((HashIntoType) PyLong_AsUnsignedLongLong(size_o));
+        } else if (PyInt_Check(size_o)) {
+            sizes.push_back((HashIntoType) PyInt_AsLong(size_o));
         } else if (PyFloat_Check(size_o)) {
             sizes.push_back((HashIntoType) PyFloat_AS_DOUBLE(size_o));
         } else {
@@ -1906,7 +1915,7 @@ static PyObject * hashbits_n_tags(PyObject * self, PyObject * args)
         return NULL;
     }
 
-    return PyInt_FromSize_t(hashbits->n_tags());
+    return PyLong_FromSize_t(hashbits->n_tags());
 }
 
 static PyObject * hashbits_count(PyObject * self, PyObject * args)
@@ -1928,7 +1937,7 @@ static PyObject * hashbits_count(PyObject * self, PyObject * args)
 
     hashbits->count(kmer);
 
-    return PyInt_FromLong(1);
+    return PyLong_FromLong(1);
 }
 
 static PyObject * hashbits_consume(PyObject * self, PyObject * args)
@@ -1951,7 +1960,7 @@ static PyObject * hashbits_consume(PyObject * self, PyObject * args)
     unsigned int n_consumed;
     n_consumed = hashbits->consume_string(long_str);
 
-    return PyInt_FromLong(n_consumed);
+    return PyLong_FromLong(n_consumed);
 }
 
 static PyObject * hashbits_print_stop_tags(PyObject * self, PyObject * args)
@@ -2077,7 +2086,7 @@ static PyObject * hashbits_repartition_largest_partition(PyObject * self,
     unsigned long next_largest = subset_p->repartition_largest_partition(distance,
                                  threshold, frequency, *counting);
 
-    return PyInt_FromLong(next_largest);
+    return PyLong_FromLong(next_largest);
 }
 
 static PyObject * hashbits_get(PyObject * self, PyObject * args)
@@ -2111,7 +2120,7 @@ static PyObject * hashbits_get(PyObject * self, PyObject * args)
         return NULL;
     }
 
-    return PyInt_FromLong(count);
+    return PyLong_FromLong(count);
 }
 
 static PyObject * hashbits_calc_connected_graph_size(PyObject * self,
@@ -2154,7 +2163,7 @@ static PyObject * hashbits_kmer_degree(PyObject * self, PyObject * args)
         return NULL;
     }
 
-    return PyInt_FromLong(hashbits->kmer_degree(kmer_s));
+    return PyLong_FromLong(hashbits->kmer_degree(kmer_s));
 }
 
 static PyObject * hashbits_trim_on_stoptags(PyObject * self, PyObject * args)
@@ -2607,7 +2616,7 @@ static PyObject * hashbits_assign_partition_id(PyObject * self, PyObject *args)
     p = hashbits->partition->assign_partition_id(ppi->kmer,
             ppi->tagged_kmers);
 
-    return PyInt_FromLong(p);
+    return PyLong_FromLong(p);
 }
 
 static PyObject * hashbits_add_tag(PyObject * self, PyObject *args)
@@ -2726,7 +2735,7 @@ static PyObject * hashbits_output_partitions(PyObject * self, PyObject * args)
         return NULL;
     }
 
-    return PyInt_FromLong(n_partitions);
+    return PyLong_FromLong(n_partitions);
 }
 
 static PyObject * hashbits_find_unpart(PyObject * self, PyObject * args)
@@ -2757,7 +2766,7 @@ static PyObject * hashbits_find_unpart(PyObject * self, PyObject * args)
         return NULL;
     }
 
-    return PyInt_FromLong(n_singletons);
+    return PyLong_FromLong(n_singletons);
 
     // Py_INCREF(Py_None);
     // return Py_None;
@@ -3076,7 +3085,7 @@ static PyObject * hashbits__get_tag_density(PyObject * self, PyObject * args)
 
     unsigned int d = hashbits->_get_tag_density();
 
-    return PyInt_FromLong(d);
+    return PyLong_FromLong(d);
 }
 
 static PyObject * hashbits__validate_subset_partitionmap(PyObject * self,
@@ -3125,7 +3134,7 @@ static PyObject * hashbits_join_partitions(PyObject * self, PyObject * args)
 
     p1 = hashbits->partition->join_partitions(p1, p2);
 
-    return PyInt_FromLong(p1);
+    return PyLong_FromLong(p1);
 }
 
 static PyObject * hashbits_get_partition_id(PyObject * self, PyObject * args)
@@ -3142,7 +3151,7 @@ static PyObject * hashbits_get_partition_id(PyObject * self, PyObject * args)
     PartitionID partition_id;
     partition_id = hashbits->partition->get_partition_id(kmer);
 
-    return PyInt_FromLong(partition_id);
+    return PyLong_FromLong(partition_id);
 }
 
 static PyObject * hashbits_is_single_partition(PyObject * self,
@@ -3234,7 +3243,7 @@ static PyObject * hashbits_get_ksize(PyObject * self, PyObject * args)
 
     unsigned int k = hashbits->ksize();
 
-    return PyInt_FromLong(k);
+    return PyLong_FromLong(k);
 }
 
 
@@ -3408,10 +3417,10 @@ static PyObject* khmer_hashbits_new(PyTypeObject * type, PyObject * args,
         Py_ssize_t sizes_list_o_length = PyList_GET_SIZE(sizes_list_o);
         for (Py_ssize_t i = 0; i < sizes_list_o_length; i++) {
             PyObject * size_o = PyList_GET_ITEM(sizes_list_o, i);
-            if (PyInt_Check(size_o)) {
-                sizes.push_back((HashIntoType) PyInt_AsLong(size_o));
-            } else if (PyLong_Check(size_o)) {
+            if (PyLong_Check(size_o)) {
                 sizes.push_back((HashIntoType) PyLong_AsUnsignedLongLong(size_o));
+            } else if (PyInt_Check(size_o)) {
+                sizes.push_back((HashIntoType) PyInt_AsLong(size_o));
             } else if (PyFloat_Check(size_o)) {
                 sizes.push_back((HashIntoType) PyFloat_AS_DOUBLE(size_o));
             } else {
@@ -3685,10 +3694,10 @@ static PyObject * khmer_labelhash_new(PyTypeObject *type, PyObject *args,
         Py_ssize_t sizes_list_o_length = PyList_GET_SIZE(sizes_list_o);
         for (Py_ssize_t i = 0; i < sizes_list_o_length; i++) {
             PyObject * size_o = PyList_GET_ITEM(sizes_list_o, i);
-            if (PyInt_Check(size_o)) {
-                sizes.push_back((HashIntoType) PyInt_AsLong(size_o));
-            } else if (PyLong_Check(size_o)) {
+            if (PyLong_Check(size_o)) {
                 sizes.push_back((HashIntoType) PyLong_AsUnsignedLongLong(size_o));
+            } else if (PyInt_Check(size_o)) {
+                sizes.push_back((HashIntoType) PyInt_AsLong(size_o));
             } else if (PyFloat_Check(size_o)) {
                 sizes.push_back((HashIntoType) PyFloat_AS_DOUBLE(size_o));
             } else {
@@ -4006,7 +4015,7 @@ static PyObject * labelhash_n_labels(PyObject * self, PyObject * args)
         return NULL;
     }
 
-    return PyInt_FromSize_t(labelhash->n_labels());
+    return PyLong_FromSize_t(labelhash->n_labels());
 }
 
 static PyMethodDef khmer_labelhash_methods[] = {
@@ -4184,10 +4193,10 @@ static PyObject* _new_hashbits(PyObject * self, PyObject * args)
     Py_ssize_t sizes_list_o_length = PyList_GET_SIZE(sizes_list_o);
     for (Py_ssize_t i = 0; i < sizes_list_o_length; i++) {
         PyObject * size_o = PyList_GET_ITEM(sizes_list_o, i);
-        if (PyInt_Check(size_o)) {
-            sizes.push_back((HashIntoType) PyInt_AsLong(size_o));
-        } else if (PyLong_Check(size_o)) {
+        if (PyLong_Check(size_o)) {
             sizes.push_back((HashIntoType) PyLong_AsUnsignedLongLong(size_o));
+        } else if (PyInt_Check(size_o)) {
+            sizes.push_back((HashIntoType) PyInt_AsLong(size_o));
         } else if (PyFloat_Check(size_o)) {
             sizes.push_back((HashIntoType) PyFloat_AS_DOUBLE(size_o));
         } else {
