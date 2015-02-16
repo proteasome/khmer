@@ -47,6 +47,27 @@
 
 #include "bytesobject.h"
 
+//
+// Python 2/3 compatibility: Module initialization
+// http://python3porting.com/cextensions.html#module-initialization
+//
+
+#if PY_MAJOR_VERSION >= 3
+  #define MOD_ERROR_VAL NULL
+  #define MOD_SUCCESS_VAL(val) val
+  #define MOD_INIT(name) PyMODINIT_FUNC PyInit_##name(void)
+  #define MOD_DEF(ob, name, doc, methods) \
+          static struct PyModuleDef moduledef = { \
+            PyModuleDef_HEAD_INIT, name, doc, -1, methods, }; \
+          ob = PyModule_Create(&moduledef);
+#else
+  #define MOD_ERROR_VAL
+  #define MOD_SUCCESS_VAL(val)
+  #define MOD_INIT(name) void init##name(void)
+  #define MOD_DEF(ob, name, doc, methods) \
+          ob = Py_InitModule3(name, methods, doc);
+#endif
+
 using namespace khmer;
 
 //
@@ -54,7 +75,7 @@ using namespace khmer;
 //
 
 extern "C" {
-    void init_khmer();
+    MOD_INIT(_khmer);
 }
 
 // Configure module logging.
@@ -4698,8 +4719,7 @@ static PyMethodDef KhmerMethods[] = {
     { NULL, NULL, 0, NULL } // sentinel
 };
 
-PyMODINIT_FUNC
-init_khmer(void)
+MOD_INIT(_khmer)
 {
     using namespace python;
 
@@ -4710,36 +4730,38 @@ init_khmer(void)
     khmer_KHashbitsType.tp_new = khmer_hashbits_new;
     khmer_KHashbitsType.tp_methods = khmer_hashbits_methods;
     if (PyType_Ready(&khmer_KHashbitsType) < 0) {
-        return;
+        return MOD_ERROR_VAL;
     }
     // add LabelHash
 
     khmer_KLabelHashType.tp_base = &khmer_KHashbitsType;
     khmer_KLabelHashType.tp_new = khmer_labelhash_new;
     if (PyType_Ready(&khmer_KLabelHashType) < 0) {
-        return;
+        return MOD_ERROR_VAL;
     }
 
     if (PyType_Ready(&khmer_KHLLCounter_Type) < 0) {
-        return;
+        return MOD_ERROR_VAL;
     }
 
     PyObject * m;
-    m = Py_InitModule3( "_khmer", KhmerMethods,
-                        "interface for the khmer module low-level extensions" );
+
+    MOD_DEF(m, "_khmer", "interface for the khmer module low-level extensions",
+            KhmerMethods);
+
     if (m == NULL) {
-        return;
+        return MOD_ERROR_VAL;
     }
     _init_Read_Type( );
     _init_ReadParser_Type( );
     if (PyType_Ready( &ReadParser_Type ) < 0) {
-        return;
+        return MOD_ERROR_VAL;
     }
     _init_ReadPairIterator_Type( );
     // TODO: Finish initialization of other types.
 
     if (PyModule_AddObject( m, "ReadParser", (PyObject *)&ReadParser_Type ) < 0) {
-        return;
+        return MOD_ERROR_VAL;
     }
     Py_INCREF(&ReadParser_Type);
     // TODO: Add other types here as their 'new' methods are implemented.
@@ -4753,6 +4775,8 @@ init_khmer(void)
 
     Py_INCREF(&khmer_KHLLCounter_Type);
     PyModule_AddObject(m, "_HLLCounter", (PyObject *)&khmer_KHLLCounter_Type);
+
+    return MOD_SUCCESS_VAL(m);
 }
 
 // vim: set ft=cpp sts=4 sw=4 tw=79:
