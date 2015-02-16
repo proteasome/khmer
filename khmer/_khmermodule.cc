@@ -97,8 +97,6 @@ _common_init_Type(
         throw khmer_exception();
     }
 
-    tobj.ob_size        = 0;
-    tobj.ob_type        = &PyType_Type;
     tobj.tp_name        = name;
     tobj.tp_basicsize       = sizeof( OBJECT );
     tobj.tp_alloc       = PyType_GenericAlloc;
@@ -206,7 +204,7 @@ namespace python
 {
 
 
-static PyTypeObject Read_Type = { PyObject_HEAD_INIT( NULL ) };
+static PyTypeObject Read_Type = { PyVarObject_HEAD_INIT(NULL, 0) };
 
 
 typedef struct {
@@ -323,8 +321,8 @@ _init_Read_Type( )
 
 static PyTypeObject ReadParser_Type
 CPYCHECKER_TYPE_OBJECT_FOR_TYPEDEF("ReadParser_Object")
-    = { PyObject_HEAD_INIT( NULL ) };
-static PyTypeObject ReadPairIterator_Type = { PyObject_HEAD_INIT( NULL ) };
+    = { PyVarObject_HEAD_INIT(NULL, 0) };
+static PyTypeObject ReadPairIterator_Type = { PyVarObject_HEAD_INIT(NULL, 0) };
 
 
 typedef struct {
@@ -704,8 +702,7 @@ static void khmer_subset_dealloc(PyObject *);
 static PyObject * khmer_subset_getattr(PyObject * obj, char * name);
 
 static PyTypeObject khmer_KSubsetPartitionType = {
-    PyObject_HEAD_INIT(NULL)
-    0,
+    PyVarObject_HEAD_INIT(NULL, 0)
     "KSubset", sizeof(khmer_KSubsetPartitionObject),
     0,
     khmer_subset_dealloc,   /*tp_dealloc*/
@@ -1601,13 +1598,12 @@ khmer_counting_getattr(PyObject * obj, char * name)
     return Py_FindMethod(khmer_counting_methods, obj, name);
 }
 
-#define is_counting_obj(v)  ((v)->ob_type == &khmer_KCountingHashType)
+#define is_counting_obj(v)  (Py_TYPE(v) == &khmer_KCountingHashType)
 
 static PyTypeObject khmer_KCountingHashType
 CPYCHECKER_TYPE_OBJECT_FOR_TYPEDEF("khmer_KCountingHashObject")
 = {
-    PyObject_HEAD_INIT(NULL)
-    0,
+    PyVarObject_HEAD_INIT(NULL, 0)
     "KCountingHash", sizeof(khmer_KCountingHashObject),
     0,
     khmer_counting_dealloc, /*tp_dealloc*/
@@ -1714,8 +1710,7 @@ static PyObject * khmer_hashbits_getattr(PyObject * obj, char * name);
 static PyTypeObject khmer_KHashbitsType
 CPYCHECKER_TYPE_OBJECT_FOR_TYPEDEF("khmer_KHashbitsObject")
 = {
-    PyObject_HEAD_INIT(NULL)
-    0,
+    PyVarObject_HEAD_INIT(NULL, 0)
     "Hashbits", sizeof(khmer_KHashbitsObject),
     0,
     (destructor)khmer_hashbits_dealloc, /*tp_dealloc*/
@@ -3460,7 +3455,7 @@ static int khmer_hashbits_init(khmer_KHashbitsObject * self, PyObject * args,
     return 0;
 }
 
-#define is_hashbits_obj(v)  ((v)->ob_type == &khmer_KHashbitsType)
+#define is_hashbits_obj(v)  (Py_TYPE(v) == &khmer_KHashbitsType)
 
 ////////////////////////////////////////////////////////////////////////////
 
@@ -3672,7 +3667,7 @@ static int khmer_labelhash_init(khmer_KLabelHashObject * self, PyObject *args,
 static PyObject * khmer_labelhash_new(PyTypeObject * type, PyObject *args,
                                       PyObject *kwds);
 
-#define is_labelhash_obj(v)  ((v)->ob_type == &khmer_KLabelHashType)
+#define is_labelhash_obj(v)  (Py_TYPE(v) == &khmer_KLabelHashType)
 
 //
 // khmer_labelhash_dealloc -- clean up a labelhash object.
@@ -3685,7 +3680,7 @@ static void khmer_labelhash_dealloc(PyObject* obj)
     delete self->labelhash;
     self->labelhash = NULL;
 
-    obj->ob_type->tp_free((PyObject*)self);
+    Py_TYPE(obj)->tp_free((PyObject*)obj);
     //PyObject_Del((PyObject *) obj);
 }
 
@@ -4049,8 +4044,7 @@ static PyMethodDef khmer_labelhash_methods[] = {
 };
 
 static PyTypeObject khmer_KLabelHashType = {
-    PyObject_HEAD_INIT(NULL)
-    0,                       /* ob_size */
+    PyVarObject_HEAD_INIT(NULL, 0)
     "_LabelHash",            /* tp_name */
     sizeof(khmer_KLabelHashObject), /* tp_basicsize */
     0,                       /* tp_itemsize */
@@ -4142,8 +4136,7 @@ static void khmer_readaligner_dealloc(PyObject* self)
 
 
 static PyTypeObject khmer_ReadAlignerType = {
-    PyObject_HEAD_INIT(NULL)
-    0,
+    PyVarObject_HEAD_INIT(NULL, 0)
     "ReadAligner", sizeof(khmer_ReadAlignerObject),
     0,
     khmer_readaligner_dealloc,     /*tp_dealloc*/
@@ -4293,7 +4286,7 @@ static void khmer_hashbits_dealloc(PyObject* obj)
     delete self->hashbits;
     self->hashbits = NULL;
 
-    self->ob_type->tp_free((PyObject*)obj);
+    Py_TYPE(obj)->tp_free((PyObject*)obj);
     //PyObject_Del((PyObject *) obj);
 }
 
@@ -4366,7 +4359,7 @@ static void khmer_hllcounter_dealloc(khmer_KHLLCounter_Object * obj)
     delete obj->hllcounter;
     obj->hllcounter = NULL;
 
-    obj->ob_type->tp_free((PyObject*)obj);
+    Py_TYPE(obj)->tp_free((PyObject*)obj);
 }
 
 static
@@ -4472,8 +4465,7 @@ static PyMethodDef khmer_hllcounter_methods[] = {
 };
 
 static PyTypeObject khmer_KHLLCounter_Type = {
-    PyObject_HEAD_INIT(NULL)
-    0,                                         /* ob_size */
+    PyVarObject_HEAD_INIT(NULL, 0)
     "khmer.KHLLCounter",                       /* tp_name */
     sizeof(khmer_KHLLCounter_Object),          /* tp_basicsize */
     0,                                         /* tp_itemsize */
@@ -4513,7 +4505,7 @@ static PyTypeObject khmer_KHLLCounter_Type = {
     khmer_hllcounter_new,                      /* tp_new */
 };
 
-#define is_hllcounter_obj(v)  ((v)->ob_type == &khmer_KHLLCounter_Type)
+#define is_hllcounter_obj(v)  (Py_TYPE(v) == &khmer_KHLLCounter_Type)
 
 
 //////////////////////////////
