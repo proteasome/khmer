@@ -24,8 +24,6 @@
 #include "khmer_exception.hh"
 #include "hllcounter.hh"
 
-using namespace khmer;
-
 //
 // Python 2/3 compatibility: PyInt and PyLong
 //
@@ -34,6 +32,15 @@ using namespace khmer;
     #define PyInt_Check(arg) PyLong_Check(arg)
     #define PyInt_AsLong(arg) PyLong_AsLong(arg)
 #endif
+
+//
+// Python 2.6 compatibility macros: PyCapsule and PyCObject
+// https://docs.python.org/2/howto/cporting.html#cobject-replaced-with-capsule
+//
+
+#include "capsulethunk.h"
+
+using namespace khmer;
 
 //
 // Function necessary for Python loading:
@@ -664,14 +671,16 @@ _PyObject_to_khmer_ReadParser( PyObject * py_object )
 // KCountingHash object
 //
 
-void free_pre_partition_info(void * p)
+void free_pre_partition_info(PyObject* tm)
 {
+    void * p = PyCapsule_GetPointer(tm, "khmer.pre_partition_info");
     _pre_partition_info * ppi = (_pre_partition_info *) p;
     delete ppi;
 }
 
-void free_subset_partition_info(void * p)
+void free_subset_partition_info(PyObject* tm)
 {
+    void * p = PyCapsule_GetPointer(tm, "khmer.SubsetPartition");
     SubsetPartition * subset_p = (SubsetPartition *) p;
     delete subset_p;
 }
@@ -1480,7 +1489,9 @@ static PyObject * hash_find_all_tags_truncate_on_abundance(PyObject * self,
 
     Py_END_ALLOW_THREADS
 
-    return PyCObject_FromVoidPtr(ppi, free_pre_partition_info);
+    return PyCapsule_New((void *)ppi,
+                         "khmer.pre_partition_info",
+                         free_pre_partition_info);
 }
 
 static PyObject * hash_do_subset_partition_with_abundance(PyObject * self,
@@ -2076,7 +2087,7 @@ static PyObject * hashbits_repartition_largest_partition(PyObject * self,
 
     SubsetPartition * subset_p;
     if (subset_o != Py_None) {
-        subset_p = (SubsetPartition *) PyCObject_AsVoidPtr(subset_o);
+        subset_p = (SubsetPartition *) PyCapsule_GetPointer(subset_o, "khmer.SubsetPartition");
     } else {
         subset_p = hashbits->partition;
     }
@@ -2261,7 +2272,9 @@ static PyObject * hashbits_do_subset_partition(PyObject * self,
         return NULL;
     }
 
-    return PyCObject_FromVoidPtr(subset_p, free_subset_partition_info);
+    return PyCapsule_New((void *)subset_p,
+                         "khmer.SubsetPartition",
+                         free_subset_partition_info);
 }
 
 static PyObject * hashbits_join_partitions_by_path(PyObject * self,
@@ -2290,13 +2303,13 @@ static PyObject * hashbits_merge_subset(PyObject * self, PyObject *args)
         return NULL;
     }
 
-    if (!PyCObject_Check(subset_obj)) {
+    if (!PyCapsule_IsValid(subset_obj, "khmer.SubsetPartition")) {
         PyErr_SetString( PyExc_ValueError, "invalid subset");
         return NULL;
     }
 
     SubsetPartition * subset_p;
-    subset_p = (SubsetPartition *) PyCObject_AsVoidPtr(subset_obj);
+    subset_p = (SubsetPartition *) PyCapsule_GetPointer(subset_obj, "khmer.SubsetPartition");
 
     hashbits->partition->merge(subset_p);
 
@@ -2591,7 +2604,9 @@ static PyObject * hashbits_find_all_tags(PyObject * self, PyObject *args)
 
     Py_END_ALLOW_THREADS
 
-    return PyCObject_FromVoidPtr(ppi, free_pre_partition_info);
+    return PyCapsule_New((void *)ppi,
+                         "khmer.pre_partition_info",
+                         free_pre_partition_info);
 }
 
 static PyObject * hashbits_assign_partition_id(PyObject * self, PyObject *args)
@@ -2604,13 +2619,13 @@ static PyObject * hashbits_assign_partition_id(PyObject * self, PyObject *args)
         return NULL;
     }
 
-    if (!PyCObject_Check(ppi_obj)) {
+    if (!PyCapsule_IsValid(ppi_obj, "khmer.pre_partition_info")) {
         PyErr_SetString( PyExc_ValueError, "invalid pre_partition_info");
         return NULL;
     }
 
     _pre_partition_info * ppi;
-    ppi = (_pre_partition_info *) PyCObject_AsVoidPtr(ppi_obj);
+    ppi = (_pre_partition_info *) PyCapsule_GetPointer(ppi_obj, "khmer.pre_partition_info");
 
     PartitionID p;
     p = hashbits->partition->assign_partition_id(ppi->kmer,
@@ -2867,7 +2882,7 @@ static PyObject * hashbits_subset_count_partitions(PyObject * self,
     }
 
     SubsetPartition * subset_p;
-    subset_p = (SubsetPartition *) PyCObject_AsVoidPtr(subset_obj);
+    subset_p = (SubsetPartition *) PyCapsule_GetPointer(subset_obj, "khmer.SubsetPartition");
 
     size_t n_partitions = 0, n_unassigned = 0;
     subset_p->count_partitions(n_partitions, n_unassigned);
@@ -2885,7 +2900,7 @@ static PyObject * hashbits_subset_partition_size_distribution(PyObject * self,
     }
 
     SubsetPartition * subset_p;
-    subset_p = (SubsetPartition *) PyCObject_AsVoidPtr(subset_obj);
+    subset_p = (SubsetPartition *) PyCapsule_GetPointer(subset_obj, "khmer.SubsetPartition");
 
     PartitionCountDistribution d;
 
@@ -3010,7 +3025,7 @@ static PyObject * hashbits_save_subset_partitionmap(PyObject * self,
     }
 
     SubsetPartition * subset_p;
-    subset_p = (SubsetPartition *) PyCObject_AsVoidPtr(subset_obj);
+    subset_p = (SubsetPartition *) PyCapsule_GetPointer(subset_obj, "khmer.SubsetPartition");
 
     Py_BEGIN_ALLOW_THREADS
 
@@ -3055,7 +3070,9 @@ static PyObject * hashbits_load_subset_partitionmap(PyObject * self,
         delete subset_p;
         return NULL;
     } else {
-        return PyCObject_FromVoidPtr(subset_p, free_subset_partition_info);
+        return PyCapsule_New((void *)subset_p,
+                             "khmer.SubsetPartition",
+                             free_subset_partition_info);
     }
 }
 
@@ -3098,7 +3115,7 @@ static PyObject * hashbits__validate_subset_partitionmap(PyObject * self,
     }
 
     SubsetPartition * subset_p;
-    subset_p = (SubsetPartition *) PyCObject_AsVoidPtr(subset_obj);
+    subset_p = (SubsetPartition *) PyCapsule_GetPointer(subset_obj, "khmer.SubsetPartition");
     subset_p->_validate_pmap();
 
     Py_RETURN_NONE;
