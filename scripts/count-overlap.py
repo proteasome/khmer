@@ -18,6 +18,9 @@ usage: count-overlap_cpp.py [-h] [-q] [--ksize KSIZE] [--n_tables N_HASHES]
 Use '-h' for parameter help.
 
 """
+
+from __future__ import print_function
+
 import sys
 import khmer
 import textwrap
@@ -59,7 +62,7 @@ def main():
 
     check_space([args.ptfile, args.fafile], args.force)
 
-    print >>sys.stderr, 'loading k-mer presence table from', args.ptfile
+    print('loading k-mer presence table from', args.ptfile, file=sys.stderr)
     ht1 = khmer.load_hashbits(args.ptfile)
     kmer_size = ht1.ksize()
 
@@ -84,7 +87,7 @@ dataset2: %s
         to_print = str(list_curve[100 + i]) + ' ' + str(list_curve[i]) + '\n'
         f_curve_obj.write(to_print)
 
-    print >> sys.stderr, 'wrote to: ' + args.report_filename
+    print('wrote to: ' + args.report_filename, file=sys.stderr)
 
 if __name__ == '__main__':
     main()

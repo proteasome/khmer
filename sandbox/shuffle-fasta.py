@@ -6,6 +6,9 @@
 # Contact: khmer-project@idyll.org
 #
 # this only works for small files! it loads everything into mem.
+
+from __future__ import print_function
+
 import sys
 from screed.fasta import fasta_iter
 import random
@@ -20,7 +23,7 @@ def main():
     for k in ks:
         s = d[k]
 
-        print '>%s\n%s' % (k, s)
+        print('>%s\n%s' % (k, s))
 
 
 if __name__ == '__main__':

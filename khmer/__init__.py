@@ -8,6 +8,8 @@
 This is khmer; please see http://khmer.readthedocs.org/.
 """
 
+from __future__ import print_function
+
 from khmer._khmer import _new_counting_hash
 from khmer._khmer import _new_hashbits
 from khmer._khmer import set_reporting_callback
@@ -101,7 +103,7 @@ def load_counting_hash(filename):
 
 
 def _default_reporting_callback(info, n_reads, other):
-    print '...', info, n_reads, other
+    print('...', info, n_reads, other)
 
 
 def reset_reporting_callback():

@@ -5,6 +5,9 @@
 # the three-clause BSD license; see doc/LICENSE.txt.
 # Contact: khmer-project@idyll.org
 #
+
+from __future__ import print_function
+
 import khmer
 import sys
 import os
@@ -33,20 +36,20 @@ def main():
     # find singletons
     n_singletons = ht.find_unpart(
         new_to_part, TRAVERSE_ON_UNPART, STOP_BIG_TRAVERSALS)
-    print 'found:', n_singletons
+    print('found:', n_singletons)
 
-    print 'saving', basename + '.unpart'
+    print('saving', basename + '.unpart')
     n_partitions = ht.output_partitions(new_to_part, basename + '.unpart')
-    print 'saving', basename + '.pmap'
+    print('saving', basename + '.pmap')
     ht.save_partitionmap(basename + '.pmap')
 
     ###
 
     (n_partitions, n_singletons) = ht.count_partitions()
 
-    print 'output partitions:', n_partitions
-    print 'pmap partitions:', n_partitions
-    print 'singletons:', n_singletons
+    print('output partitions:', n_partitions)
+    print('pmap partitions:', n_partitions)
+    print('singletons:', n_singletons)
 
 
 if __name__ == '__main__':

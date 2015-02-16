@@ -5,6 +5,9 @@
 # the three-clause BSD license; see doc/LICENSE.txt.
 # Contact: khmer-project@idyll.org
 #
+
+from __future__ import print_function
+
 import khmer
 import sys
 from screed.fasta import fasta_iter
@@ -24,7 +27,7 @@ def main():
     histcount = [0] * 200
     for n, record in enumerate(fasta_iter(open(sys.argv[1]))):
         if n % 10000 == 0:
-            print '...', n
+            print('...', n)
 
         seq = record['sequence']
         for pos in range(0, len(seq) - K + 1):
@@ -40,7 +43,7 @@ def main():
         if not count:
             continue
 
-        print >>outfp, i, total, count, total / float(count)
+        print(i, total, count, total / float(count), file=outfp)
 
 
 if __name__ == '__main__':

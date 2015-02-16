@@ -5,6 +5,9 @@
 # the three-clause BSD license; see doc/LICENSE.txt.
 # Contact: khmer-project@idyll.org
 #
+
+from __future__ import print_function
+
 import khmer
 import sys
 import screed
@@ -38,7 +41,7 @@ def main():
 
     for i, (n, m) in enumerate(zip(x, y)):
         if m:
-            print '%d,%d,%d' % (i, n, m)
+            print('%d,%d,%d' % (i, n, m))
 
 
 if __name__ == '__main__':

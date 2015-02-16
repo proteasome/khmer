@@ -11,6 +11,8 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+from __future__ import print_function
+
 import sys
 import os
 
@@ -60,10 +62,10 @@ import pkg_resources
 try:
     release = pkg_resources.get_distribution('khmer').version
 except pkg_resources.DistributionNotFound:
-    print 'To build the documentation, The distribution information of khmer' \
-        ' has to be available.  Either install the package into your' \
-        ' development environment or run "setup.py develop" to setup the' \
-        ' metadata.  A virtualenv is recommended!'
+    print('To build the documentation, The distribution information of khmer'
+        ' has to be available.  Either install the package into your'
+        ' development environment or run "setup.py develop" to setup the'
+        ' metadata.  A virtualenv is recommended!')
     sys.exit(1)
 del pkg_resources
 

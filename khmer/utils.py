@@ -7,6 +7,8 @@
 # Convenience functions for performing common argument-checking tasks in
 # scripts.
 
+from __future__ import print_function
+
 
 def print_error(msg):
     """
@@ -15,7 +17,7 @@ def print_error(msg):
 
     import sys
 
-    print >>sys.stderr, msg
+    print(msg, file=sys.stderr)
 
 
 def write_record(record, fp):

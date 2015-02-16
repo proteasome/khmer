@@ -7,6 +7,8 @@
 #
 # using bloom filter to count unique kmers
 
+from __future__ import print_function
+
 import khmer
 import sys
 import screed
@@ -31,9 +33,9 @@ def main():
                 n_unique += 1
             ht.count(kmer)
 
-    print n_unique
-    print ht.n_occupied()
-    print ht.n_unique_kmers()
+    print(n_unique)
+    print(ht.n_occupied())
+    print(ht.n_unique_kmers())
 
 
 if __name__ == '__main__':

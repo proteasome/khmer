@@ -5,6 +5,9 @@
 # the three-clause BSD license; see doc/LICENSE.txt.
 # Contact: khmer-project@idyll.org
 #
+
+from __future__ import print_function
+
 import khmer
 import sys
 import screed
@@ -18,7 +21,7 @@ def main():
     input_fasta = sys.argv[3]
     K = int(sys.argv[1])
     x = float(sys.argv[2])
-    
+
     ht = khmer.new_hashbits(K, x, 4)
 
     sparse_graph = gt.Graph()
@@ -27,7 +30,7 @@ def main():
 
     for n, record in enumerate(screed.open(input_fasta)):
         if n % 1000 == 0:
-            print >>sys.stderr, '...loaded and tagged {} sequences'.format(n)
+            print('...loaded and tagged {} sequences'.format(n), file=sys.stderr)
         name = record.name
         sequence = record.sequence
 
@@ -58,7 +61,7 @@ def main():
             if new:
                 e = sparse_graph.add_edge(srcv, dstv)
 
-    print 'Sparse graph has {} nodes, {} edges'.format(sparse_graph.num_vertices(), sparse_graph.num_edges())
+    print('Sparse graph has {} nodes, {} edges'.format(sparse_graph.num_vertices(), sparse_graph.num_edges()))
     comp = gt.label_largest_component(sparse_graph, directed=False)
     #pos = gt.radial_tree_layout(sparse_graph, sparse_graph.vertex(0))
     gt.graph_draw(sparse_graph, output_size=(

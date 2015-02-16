@@ -5,6 +5,9 @@
 # the three-clause BSD license; see doc/LICENSE.txt.
 # Contact: khmer-project@idyll.org
 #
+
+from __future__ import print_function
+
 import khmer
 import sys
 import screed
@@ -32,9 +35,9 @@ def main():
         n_out = 0
         for n, record in enumerate(screed.open(filename)):
             if n > 0 and n % 10000 == 0:
-                print >>sys.stderr, '...', n, discarded
-                print >>sys.stderr, '==>', total_kmers, kept_kmers, int(
-                    float(kept_kmers) / float(total_kmers) * 100.)
+                print('...', n, discarded, file=sys.stderr)
+                print('==>', total_kmers, kept_kmers, int(
+                    float(kept_kmers) / float(total_kmers) * 100.), file=sys.stderr)
             seq = record.sequence
             seq = seq.replace('N', 'G')
 
@@ -52,16 +55,16 @@ def main():
 
                 if len(path) < OUTPUT_WINDOW:
                     total_out += 1
-                    print '>%d\n%s' % (total_out, path)
+                    print('>%d\n%s' % (total_out, path))
                     continue
 
                 for start in range(0, len(path) - OUTPUT_WINDOW + 1,
                                    OUTPUT_OVERLAP):
                     total_out += 1
                     subpath = path[start:start + OUTPUT_WINDOW]
-                    print '>%d\n%s' % (total_out, subpath)
+                    print('>%d\n%s' % (total_out, subpath))
 
-        print >>sys.stderr, '%d for %s' % (n_out, filename)
+        print('%d for %s' % (n_out, filename), file=sys.stderr)
 
 if __name__ == '__main__':
     main()

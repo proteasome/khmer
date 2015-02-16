@@ -15,6 +15,8 @@ will be placed in 'infile.stopfilt'.
 Use '-h' for parameter help.
 """
 
+from __future__ import print_function
+
 import os
 import khmer
 import argparse
@@ -61,7 +63,7 @@ def main():
 
     check_space(infiles, args.force)
 
-    print >>sys.stderr, 'loading stop tags, with K', args.ksize
+    print('loading stop tags, with K', args.ksize, file=sys.stderr)
     htable = khmer.new_hashbits(args.ksize, 1, 1)
     htable.load_stop_tags(stoptags)
 
@@ -80,7 +82,7 @@ def main():
 
     # the filtering loop
     for infile in infiles:
-        print >>sys.stderr, 'filtering', infile
+        print('filtering', infile, file=sys.stderr)
         outfile = os.path.basename(infile) + '.stopfilt'
 
         outfp = open(outfile, 'w')
@@ -88,7 +90,7 @@ def main():
         tsp = ThreadedSequenceProcessor(process_fn)
         tsp.start(verbose_loader(infile), outfp)
 
-        print >>sys.stderr, 'output in', outfile
+        print('output in', outfile, file=sys.stderr)
 
 if __name__ == '__main__':
     main()

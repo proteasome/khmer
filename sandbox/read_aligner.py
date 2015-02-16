@@ -7,6 +7,9 @@ Output sequences will be put in @@@.
 
 Use '-h' for parameter help.
 """
+
+from __future__ import print_function
+
 import sys
 import screed
 import os
@@ -35,30 +38,30 @@ def main():
     counting_ht = args.input_table
     infiles = args.input_filenames
 
-    print >>sys.stderr, 'file with ht: %s' % counting_ht
+    print('file with ht: %s' % counting_ht, file=sys.stderr)
 
-    print >>sys.stderr, 'loading hashtable'
+    print('loading hashtable', file=sys.stderr)
     ht = khmer.load_counting_hash(counting_ht)
     K = ht.ksize()
 
     aligner = khmer.new_readaligner(ht, args.trusted_cov, args.theta) # counting hash, trusted kmer coverage cutoff, bits theta (threshold value for terminating unproductive alignemnts)
-    
+
     ### the filtering loop
     for infile in infiles:
-        print >>sys.stderr, 'aligning', infile
+        print('aligning', infile, file=sys.stderr)
         for n, record in enumerate(screed.open(infile)):
 
             name = record['name']
             seq = record['sequence'].upper()
-            print >>sys.stderr, name
-            print >>sys.stderr, seq
+            print(name, file=sys.stderr)
+            print(seq, file=sys.stderr)
 
             score, graph_alignment, read_alignment, truncated = aligner.align(seq)
-            print >>sys.stderr, score
-            print >>sys.stderr, graph_alignment
-            print >>sys.stderr, read_alignment
-            print >>sys.stderr, truncated
-            print ">{0}\n{1}".format(name, graph_alignment)
+            print(score, file=sys.stderr)
+            print(graph_alignment, file=sys.stderr)
+            print(read_alignment, file=sys.stderr)
+            print(truncated, file=sys.stderr)
+            print(">{0}\n{1}".format(name, graph_alignment))
 
 if __name__ == '__main__':
     main()

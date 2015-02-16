@@ -13,6 +13,9 @@ Output sequences will be put in @@@.
 
 Use '-h' for parameter help.
 """
+
+from __future__ import print_function
+
 import sys
 import screed.fasta
 import os
@@ -40,17 +43,17 @@ def main():
     counting_ht = args.input_table
     infiles = args.input_filenames
 
-    print 'file with ht: %s' % counting_ht
+    print('file with ht: %s' % counting_ht)
 
-    print 'loading hashtable'
+    print('loading hashtable')
     ht = khmer.load_counting_hash(counting_ht)
     K = ht.ksize()
     C = args.coverage
     max_error_region = args.max_error_region
 
-    print "K:", K
-    print "C:", C
-    print "max error region:", max_error_region
+    print("K:", K)
+    print("C:", C)
+    print("max error region:", max_error_region)
 
     # the filtering function.
     def process_fn(record):
@@ -72,14 +75,14 @@ def main():
 
     # the filtering loop
     for infile in infiles:
-        print 'filtering', infile
+        print('filtering', infile)
         outfile = os.path.basename(infile) + '.corr'
         outfp = open(outfile, 'w')
 
         tsp = ThreadedSequenceProcessor(process_fn)
         tsp.start(verbose_loader(infile), outfp)
 
-        print 'output in', outfile
+        print('output in', outfile)
 
 if __name__ == '__main__':
     main()

@@ -19,6 +19,9 @@ The output file contains sequence id, median, average, stddev, and seq length.
 
 NOTE: All 'N's in the input sequences are converted to 'G's.
 """
+
+from __future__ import print_function
+
 import screed
 import argparse
 import khmer
@@ -70,11 +73,11 @@ def main():
 
     check_space(infiles, args.force)
 
-    print >>sys.stderr, 'loading k-mer counting table from', htfile
+    print('loading k-mer counting table from', htfile, file=sys.stderr)
     htable = khmer.load_counting_hash(htfile)
     ksize = htable.ksize()
 
-    print >>sys.stderr, 'writing to', output_filename
+    print('writing to', output_filename, file=sys.stderr)
     output = open(output_filename, 'w')
 
     for record in screed.open(input_filename):
@@ -84,7 +87,7 @@ def main():
 
         if ksize <= len(seq):
             medn, ave, stdev = htable.get_median_count(seq)
-            print >> output, record.name, medn, ave, stdev, len(seq)
+            print(record.name, medn, ave, stdev, len(seq), file=output)
 
 if __name__ == '__main__':
     main()

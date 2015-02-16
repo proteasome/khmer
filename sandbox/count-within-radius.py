@@ -5,6 +5,9 @@
 # the three-clause BSD license; see doc/LICENSE.txt.
 # Contact: khmer-project@idyll.org
 #
+
+from __future__ import print_function
+
 import sys
 import screed.fasta
 import os
@@ -26,21 +29,21 @@ def main():
     if len(sys.argv) > 3:
         RADIUS = int(sys.argv[3])
 
-    print 'saving to:', outfile
+    print('saving to:', outfile)
 
-    print 'making hashtable'
+    print('making hashtable')
     ht = khmer.new_hashbits(K, HASHTABLE_SIZE, N_HT)
 
-    print 'eating', infile
+    print('eating', infile)
     ht.consume_fasta(infile)
 
-    print 'loading'
+    print('loading')
     ht.save(outfile + '.ht')
 
     outfp = open(outfile, 'w')
     for n, record in enumerate(screed.open(infile)):
         if n % 10000 == 0:
-            print '... saving', n
+            print('... saving', n)
         seq = record['sequence']
 
         for pos in range(0, len(seq), 200):
@@ -53,7 +56,7 @@ def main():
                 MAX_DENSITY)
             density /= float(RADIUS)
 
-            print >>outfp, '>%s d=%.3f\n%s' % (record['name'], density, subseq)
+            print('>%s d=%.3f\n%s' % (record['name'], density, subseq), file=outfp)
 
 
 if __name__ == '__main__':

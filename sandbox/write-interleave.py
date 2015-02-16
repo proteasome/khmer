@@ -5,6 +5,9 @@
 # the three-clause BSD license; see doc/LICENSE.txt.
 # Contact: khmer-project@idyll.org
 #
+
+from __future__ import print_function
+
 import sys
 import screed
 import os.path
@@ -20,8 +23,8 @@ def main():
         assert r1.name == r2.name, (r1.name, r2.name)
 
         final = filename.replace('R1', '')
-        print 'python /root/khmer/sandbox/interleave.py %s %s | gzip -9c > %s' % (
-            filename, filename2, final)
+        print('python /root/khmer/sandbox/interleave.py %s %s | gzip -9c > %s' % (
+            filename, filename2, final))
 
 if __name__ == '__main__':
     main()

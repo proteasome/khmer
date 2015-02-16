@@ -5,6 +5,9 @@
 # the three-clause BSD license; see doc/LICENSE.txt.
 # Contact: khmer-project@idyll.org
 #
+
+from __future__ import print_function
+
 import sys
 from screed.fasta import fasta_iter
 
@@ -21,7 +24,7 @@ def main():
     count = 0
     for n, name, pid, seq in read_partition_file(open(sys.argv[1])):
         if pid == select_pid:
-            print '>%s\t%d\n%s' % (name, pid, seq)
+            print('>%s\t%d\n%s' % (name, pid, seq))
             count += 1
 
         if n % 10000 == 0:

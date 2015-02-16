@@ -14,6 +14,9 @@ Convert FASTQ files to FASTA format.
 
 Use '-h' for parameter help.
 """
+
+from __future__ import print_function
+
 import sys
 import argparse
 import screed
@@ -39,12 +42,12 @@ def get_parser():
 
 def main():
     args = get_parser().parse_args()
-    print >> sys.stderr, ('fastq from ', args.input_sequence)
+    print(('fastq from ', args.input_sequence), file=sys.stderr)
 
     n_count = 0
     for n, record in enumerate(screed.open(args.input_sequence)):
         if n % 10000 == 0:
-            print>>sys.stderr, '...', n
+            print('...', n, file=sys.stderr)
 
         sequence = record['sequence']
         name = record['name']
@@ -57,15 +60,15 @@ def main():
         args.output.write('>' + name + '\n')
         args.output.write(sequence + '\n')
 
-    print >> sys.stderr, '\n' + 'lines from ' + args.input_sequence
+    print('\n' + 'lines from ' + args.input_sequence, file=sys.stderr)
 
     if not args.n_keep:
-        print >> sys.stderr, str(n_count) + ' lines dropped.'
+        print(str(n_count) + ' lines dropped.', file=sys.stderr)
 
     else:
-        print >> sys.stderr, 'No lines dropped from file.'
+        print('No lines dropped from file.', file=sys.stderr)
 
-    print >> sys.stderr, 'Wrote output to', args.output
+    print('Wrote output to', args.output, file=sys.stderr)
 
 if __name__ == '__main__':
     main()

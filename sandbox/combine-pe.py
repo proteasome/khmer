@@ -5,6 +5,9 @@
 # the three-clause BSD license; see doc/LICENSE.txt.
 # Contact: khmer-project@idyll.org
 #
+
+from __future__ import print_function
+
 import sys
 import khmer
 from screed.fasta import fasta_iter
@@ -32,7 +35,7 @@ def main():
     for n, record in enumerate(
             fasta_iter(open(sys.argv[1]), parse_description=False)):
         if n % 10000 == 0:
-            print '...', n
+            print('...', n)
 
         name = record['name'].split()[0]
         name = name.split('/', 1)[0]
@@ -52,12 +55,12 @@ def main():
         last_record = record
 
     ht.output_partitions(sys.argv[1], sys.argv[1] + '.paired')
-    print 'before:', before
+    print('before:', before)
     after = ht.count_partitions()
-    print 'after:', after
+    print('after:', after)
 
     n_combined = before[0] - after[0]
-    print 'combined:', n_combined
+    print('combined:', n_combined)
 
     # vim: set ft=python ts=4 sts=4 sw=4 et tw=79:
 

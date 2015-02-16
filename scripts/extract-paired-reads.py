@@ -14,6 +14,9 @@ extract them into separate files (.pe and .se).
 
 Reads FASTQ and FASTA input, retains format for output.
 """
+
+from __future__ import print_function
+
 import screed
 import sys
 import os.path
@@ -94,9 +97,9 @@ def main():
     single_fp = open(outfile + '.se', 'w')
     paired_fp = open(outfile + '.pe', 'w')
 
-    print >>sys.stderr, 'reading file "%s"' % args.infile
-    print >>sys.stderr, 'outputting interleaved pairs to "%s.pe"' % outfile
-    print >>sys.stderr, 'outputting orphans to "%s.se"' % outfile
+    print('reading file "%s"' % args.infile, file=sys.stderr)
+    print('outputting interleaved pairs to "%s.pe"' % outfile, file=sys.stderr)
+    print('outputting orphans to "%s.se"' % outfile, file=sys.stderr)
 
     last_record = None
     last_name = None
@@ -108,7 +111,7 @@ def main():
     index = 0
     for index, record in enumerate(screed.open(sys.argv[1])):
         if index % 100000 == 0 and index > 0:
-            print '...', index
+            print('...', index)
         name = record['name'].split()[0]
 
         if last_record:
@@ -143,12 +146,12 @@ def main():
     if n_pe == 0:
         raise Exception("no paired reads!? check file formats...")
 
-    print >>sys.stderr, 'DONE; read %d sequences,' \
+    print('DONE; read %d sequences,' \
         ' %d pairs and %d singletons' % \
-        (index + 1, n_pe, n_se)
+        (index + 1, n_pe, n_se), file=sys.stderr)
 
-    print >> sys.stderr, 'wrote to: ' + outfile \
-        + '.se' + ' and ' + outfile + '.pe'
+    print('wrote to: ' + outfile \
+        + '.se' + ' and ' + outfile + '.pe', file=sys.stderr)
 
 if __name__ == '__main__':
     main()

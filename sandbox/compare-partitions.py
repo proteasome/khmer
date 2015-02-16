@@ -7,6 +7,8 @@
 #
 # only works for small files...
 
+from __future__ import print_function
+
 import sys
 from screed.fasta import fasta_iter
 
@@ -60,7 +62,7 @@ def main():
         x2 = p2[pid2]
 
         if x1 != x2 and pid not in found:
-            print pid, pid2, len(x1), len(x2)
+            print(pid, pid2, len(x1), len(x2))
             found.add(pid)
 
 

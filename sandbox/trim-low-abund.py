@@ -17,6 +17,9 @@ TODO: paired support: paired reads should be kept together.
 TODO: load/save counting table.
 TODO: move output_single elsewhere
 """
+
+from __future__ import print_function
+
 import sys
 import screed
 import os
@@ -93,8 +96,7 @@ def main():
     ###
 
     if len(set(args.input_filenames)) != len(args.input_filenames):
-        print >>sys.stderr, \
-            "Error: Cannot input the same filename multiple times."
+        print("Error: Cannot input the same filename multiple times.", file=sys.stderr)
         sys.exit(1)
 
     ###
@@ -106,11 +108,11 @@ def main():
     CUTOFF = args.abund_cutoff
     NORMALIZE_LIMIT = args.normalize_to
 
-    print 'making hashtable'
+    print('making hashtable')
     ht = khmer.new_counting_hash(K, HT_SIZE, N_HT)
 
     tempdir = tempfile.mkdtemp('khmer', 'tmp', args.tempdir)
-    print 'created temporary directory %s; use -T to change location' % tempdir
+    print('created temporary directory %s; use -T to change location' % tempdir)
 
     ###
 
@@ -136,8 +138,8 @@ def main():
         save_pass2 = 0
         for n, read in enumerate(screed.open(filename)):
             if n % 10000 == 0:
-                print '...', n, filename, save_pass2, read_reads, read_bp, \
-                    wrote_reads, wrote_bp
+                print('...', n, filename, save_pass2, read_reads, read_bp, \
+                    wrote_reads, wrote_bp)
 
             read_reads += 1
             read_bp += len(read.sequence)
@@ -163,19 +165,19 @@ def main():
         pass2fp.close()
         trimfp.close()
 
-        print '%s: kept aside %d of %d from first pass, in %s' % \
-              (filename, save_pass2, n, filename)
+        print('%s: kept aside %d of %d from first pass, in %s' % \
+              (filename, save_pass2, n, filename))
         save_pass2_total += save_pass2
 
     skipped_n = 0
     skipped_bp = 0
     for orig_filename, pass2filename, trimfilename in pass2list:
-        print 'second pass: looking at sequences kept aside in %s' % \
-              pass2filename
+        print('second pass: looking at sequences kept aside in %s' % \
+              pass2filename)
         for n, read in enumerate(screed.open(pass2filename)):
             if n % 10000 == 0:
-                print '... x 2', n, pass2filename, read_reads, read_bp, \
-                      wrote_reads, wrote_bp
+                print('... x 2', n, pass2filename, read_reads, read_bp, \
+                      wrote_reads, wrote_bp)
 
             trimfp = open(trimfilename, 'a')
 
@@ -200,35 +202,34 @@ def main():
                     if trim_at != len(read.sequence):
                         trimmed_reads += 1
 
-        print 'removing %s' % pass2filename
+        print('removing %s' % pass2filename)
         os.unlink(pass2filename)
 
-    print 'removing temp directory & contents (%s)' % tempdir
+    print('removing temp directory & contents (%s)' % tempdir)
     shutil.rmtree(tempdir)
 
-    print 'read %d reads, %d bp' % (read_reads, read_bp,)
-    print 'wrote %d reads, %d bp' % (wrote_reads, wrote_bp,)
-    print 'removed %d reads and trimmed %d reads' % (read_reads - wrote_reads,
-                                                     trimmed_reads,)
-    print 'looked at %d reads twice' % (save_pass2_total,)
-    print 'trimmed or removed %.2f%% of bases (%d total)' % \
-        ((1 - (wrote_bp / float(read_bp))) * 100., read_bp - wrote_bp)
+    print('read %d reads, %d bp' % (read_reads, read_bp,))
+    print('wrote %d reads, %d bp' % (wrote_reads, wrote_bp,))
+    print('removed %d reads and trimmed %d reads' % (read_reads - wrote_reads,
+                                                     trimmed_reads,))
+    print('looked at %d reads twice' % (save_pass2_total,))
+    print('trimmed or removed %.2f%% of bases (%d total)' % \
+        ((1 - (wrote_bp / float(read_bp))) * 100., read_bp - wrote_bp))
     if args.variable_coverage:
-        print 'skipped %d reads/%d bases because of low coverage' % \
-              (skipped_n, skipped_bp)
-        print 'output in *.abundtrim'
+        print('skipped %d reads/%d bases because of low coverage' % \
+              (skipped_n, skipped_bp))
+        print('output in *.abundtrim')
 
     fp_rate = khmer.calc_expected_collisions(ht)
-    print >>sys.stderr, \
-        'fp rate estimated to be {fpr:1.3f}'.format(fpr=fp_rate)
+    print('fp rate estimated to be {fpr:1.3f}'.format(fpr=fp_rate), file=sys.stderr)
 
     if fp_rate > MAX_FALSE_POSITIVE_RATE:
-        print >> sys.stderr, "**"
-        print >> sys.stderr, ("** ERROR: the k-mer counting table is too small"
+        print("**", file=sys.stderr)
+        print(("** ERROR: the k-mer counting table is too small"
                               " for this data set. Increase tablesize/# "
-                              "tables.")
-        print >> sys.stderr, "**"
-        print >> sys.stderr, "** Do not use these results!!"
+                              "tables."), file=sys.stderr)
+        print("**", file=sys.stderr)
+        print("** Do not use these results!!", file=sys.stderr)
         sys.exit(1)
 
 

@@ -12,6 +12,9 @@ Streaming error trimming based on digital normalization.
 
 Use -h for parameter help.
 """
+
+from __future__ import print_function
+
 import sys
 import screed
 import os
@@ -81,7 +84,7 @@ def main():
 
     errors = [0] * 1000
 
-    print 'making hashtable'
+    print('making hashtable')
     ht = khmer.new_counting_hash(K, HT_SIZE, N_HT)
 
     save_pass2 = 0
@@ -98,7 +101,7 @@ def main():
 
         for n, read in enumerate(screed.open(filename)):
             if n % 10000 == 0:
-                print '...', n, filename, save_pass2
+                print('...', n, filename, save_pass2)
             seq = read.sequence.replace('N', 'A')
             med, _, _ = ht.get_median_count(seq)
 
@@ -116,12 +119,12 @@ def main():
         pass2fp.close()
         trimfp.close()
 
-        print 'saved %d of %d to pass2fp' % (save_pass2, n,)
+        print('saved %d of %d to pass2fp' % (save_pass2, n,))
 
     for pass2filename, trimfilename in pass2list:
         for n, read in enumerate(screed.open(pass2filename)):
             if n % 10000 == 0:
-                print '... x 2', n, filename
+                print('... x 2', n, filename)
 
             trimfp = open(trimfilename, 'a')
 
@@ -141,7 +144,7 @@ def main():
 
     fp = open('err-profile.out', 'w')
     for pos, count in enumerate(errors):
-        print >>fp, pos, count
+        print(pos, count, file=fp)
 
 if __name__ == '__main__':
     main()

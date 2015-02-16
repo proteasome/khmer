@@ -14,6 +14,9 @@ files (.1 and .2).
 
 Reads FASTQ and FASTA input, retains format for output.
 """
+
+from __future__ import print_function
+
 import screed
 import sys
 import os
@@ -111,7 +114,7 @@ def main():
     index = None
     for index, record in enumerate(screed.open(infile)):
         if index % 100000 == 0 and index:
-            print >> sys.stderr, '...', index
+            print('...', index, file=sys.stderr)
 
         name = record.name
         if name.endswith('/1'):
@@ -121,10 +124,10 @@ def main():
             write_record(record, fp_out2)
             counter2 += 1
 
-    print >> sys.stderr, "DONE; split %d sequences (%d left, %d right)" % \
-        (index + 1, counter1, counter2)
-    print >> sys.stderr, "/1 reads in %s" % out1
-    print >> sys.stderr, "/2 reads in %s" % out2
+    print("DONE; split %d sequences (%d left, %d right)" % \
+        (index + 1, counter1, counter2), file=sys.stderr)
+    print("/1 reads in %s" % out1, file=sys.stderr)
+    print("/2 reads in %s" % out2, file=sys.stderr)
 
 if __name__ == '__main__':
     main()

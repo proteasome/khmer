@@ -18,6 +18,8 @@ By default, output is sent to stdout; or use -o. Use '-h' for parameter help.
 # TODO: take fa as well?
 #      support gzip option?
 
+from __future__ import print_function
+
 import screed
 import sys
 import itertools
@@ -73,28 +75,28 @@ def main():
         s2_file = args.infiles[1]
     else:
         s2_file = s1_file.replace('_R1_', '_R2_')
-        print >> sys.stderr, ("given only one file; "
-                              "guessing that R2 file is %s" % s2_file)
+        print(("given only one file; "
+                              "guessing that R2 file is %s" % s2_file), file=sys.stderr)
 
     fail = False
     if not os.path.exists(s1_file):
-        print >> sys.stderr, "Error! R1 file %s does not exist" % s1_file
+        print("Error! R1 file %s does not exist" % s1_file, file=sys.stderr)
         fail = True
 
     if not os.path.exists(s2_file):
-        print >> sys.stderr, "Error! R2 file %s does not exist" % s2_file
+        print("Error! R2 file %s does not exist" % s2_file, file=sys.stderr)
         fail = True
 
     if fail and not args.force:
         sys.exit(1)
 
-    print >> sys.stderr, "Interleaving:\n\t%s\n\t%s" % (s1_file, s2_file)
+    print("Interleaving:\n\t%s\n\t%s" % (s1_file, s2_file), file=sys.stderr)
 
     counter = 0
     for read1, read2 in itertools.izip(screed.open(s1_file),
                                        screed.open(s2_file)):
         if counter % 100000 == 0:
-            print >> sys.stderr, '...', counter, 'pairs'
+            print('...', counter, 'pairs', file=sys.stderr)
         counter += 1
 
         name1 = read1.name
@@ -112,9 +114,9 @@ def main():
         write_record(read1, args.output)
         write_record(read2, args.output)
 
-    print >> sys.stderr, 'final: interleaved %d pairs' % counter
+    print('final: interleaved %d pairs' % counter, file=sys.stderr)
 
-    print >> sys.stderr, 'output written to', args.output
+    print('output written to', args.output, file=sys.stderr)
 
 if __name__ == '__main__':
     main()

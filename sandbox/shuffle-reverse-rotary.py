@@ -5,6 +5,9 @@
 # the three-clause BSD license; see doc/LICENSE.txt.
 # Contact: khmer-project@idyll.org
 #
+
+from __future__ import print_function
+
 import sys
 import screed
 import os.path
@@ -30,12 +33,12 @@ def main():
         for record in screed.open(filename):
             total += 1
             if total % 10000 == 0:
-                print '...', total
+                print('...', total)
             loc = total % ROTARY_SIZE
             fp_d[loc].write('>%s\n%s\n' % (record.name, record.sequence))
 
-    print 'reverse-rotary shuffled %d sequences into %d files (%s.NNN)' % \
-        (total, ROTARY_SIZE, prefix)
+    print('reverse-rotary shuffled %d sequences into %d files (%s.NNN)' % \
+        (total, ROTARY_SIZE, prefix))
 
 
 if __name__ == '__main__':

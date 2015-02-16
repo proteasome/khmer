@@ -5,6 +5,9 @@
 # the three-clause BSD license; see doc/LICENSE.txt.
 # Contact: khmer-project@idyll.org
 #
+
+from __future__ import print_function
+
 import screed
 import khmer
 import sys
@@ -32,7 +35,7 @@ def main():
 
     for n, record in enumerate(screed.open(input_filename)):
         if n % 1000 == 0:
-            print n
+            print(n)
 
         seq = record.sequence
         seq_name = record.name
@@ -50,8 +53,8 @@ def main():
             outfp.write('>%s\n%s\n' % (seq_name, seq))
 
 
-    print 'corrected', corrected
-    print 'uncorrected', uncorrected
+    print('corrected', corrected)
+    print('uncorrected', uncorrected)
 
     outfp.close()
 

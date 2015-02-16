@@ -7,6 +7,8 @@
 #
 # using bloom filter to count intersection
 
+from __future__ import print_function
+
 import khmer
 import sys
 import screed
@@ -30,9 +32,9 @@ def main():
             if (not ht.get(kmer)):
                 n_unique += 1
             ht.count(kmer)
-    print filename, 'has been consumed.'
-    print '# of unique kmers:', n_unique
-    print '# of occupied bin:', ht.n_occupied()
+    print(filename, 'has been consumed.')
+    print('# of unique kmers:', n_unique)
+    print('# of occupied bin:', ht.n_occupied())
 
     filename2 = sys.argv[5]
     ht2 = khmer.new_hashbits(K, HT_SIZE, N_HT)
@@ -49,11 +51,11 @@ def main():
                     n_overlap += 1
             ht2.count(kmer)
 
-    print filename2, 'has been consumed.'
-    print '# of unique kmers:', n_unique
-    print '# of occupied bin:', ht2.n_occupied()
+    print(filename2, 'has been consumed.')
+    print('# of unique kmers:', n_unique)
+    print('# of occupied bin:', ht2.n_occupied())
 
-    print n_overlap, 'unique kmers appears in both ', filename, ' and ', filename2
+    print(n_overlap, 'unique kmers appears in both ', filename, ' and ', filename2)
 
 
 if __name__ == '__main__':
