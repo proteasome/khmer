@@ -22,6 +22,8 @@ import argparse
 import khmer
 from khmer.kfile import check_file_status, check_space
 from khmer.khmer_args import info
+from khmer.kfile import add_output_compression_type
+from khmer.kfile import enable_output_compression
 
 
 def get_parser():
@@ -44,12 +46,14 @@ def get_parser():
                         + khmer.__version__)
     parser.add_argument('-f', '--force', default=False, action='store_true',
                         help='Overwrite output file if it exists')
+    add_output_compression_type(parser)
     return parser
 
 
 def main():
     info('split-paired-reads.py')
     args = get_parser().parse_args()
+    enable_output_compression(args)
 
     infile = args.infile
 

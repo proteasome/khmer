@@ -1611,6 +1611,9 @@ def test_fastq_to_fasta():
     args = [clean_infile, '--gzip', '-o', clean_outfile]
     (status, out, err) = utils.runscript(script, args, in_dir)
 
+    args = [clean_infile, '--bzip', '-o', clean_outfile]
+    (status, out, err) = utils.runscript(script, args, in_dir)
+
 
 def test_extract_long_sequences():
 

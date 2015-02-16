@@ -27,6 +27,8 @@ import khmer
 from khmer.kfile import check_file_status, check_space
 from khmer.khmer_args import info
 from khmer.utils import write_record
+from khmer.kfile import add_output_compression_type
+from khmer.kfile import enable_output_compression
 
 DEFAULT_NUM_READS = int(1e5)
 DEFAULT_MAX_READS = int(1e8)
@@ -70,6 +72,7 @@ def get_parser():
                         + khmer.__version__)
     parser.add_argument('-f', '--force', default=False, action='store_true',
                         help='Overwrite output file if it exits')
+    add_output_compression_type(parser)
     return parser
 
 
@@ -83,6 +86,7 @@ def output_single(read):
 def main():
     info('sample-reads-randomly.py')
     args = get_parser().parse_args()
+    enable_output_compression(args)
 
     for _ in args.filenames:
         check_file_status(_, args.force)

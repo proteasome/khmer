@@ -27,6 +27,8 @@ import argparse
 from khmer.kfile import (check_space, check_space_for_hashtable,
                          check_valid_file_exists)
 from khmer.utils import write_record
+from khmer.kfile import add_output_compression_type
+from khmer.kfile import enable_output_compression
 DEFAULT_DESIRED_COVERAGE = 10
 
 MAX_FALSE_POSITIVE_RATE = 0.8             # see Zhang et al.,
@@ -204,12 +206,14 @@ def get_parser():
     parser.add_argument('--force', default=False, action='store_true',
                         help='Overwrite output file if it exists')
     add_loadhash_args(parser)
+    add_output_compression_type(parser)
     return parser
 
 
 def main():  # pylint: disable=too-many-branches,too-many-statements
     info('normalize-by-median.py', ['diginorm'])
     args = get_parser().parse_args()
+    enable_output_compression(args)
 
     report_on_config(args)
 
