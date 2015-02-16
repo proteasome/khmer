@@ -40,6 +40,13 @@
 
 #include "capsulethunk.h"
 
+//
+// Python 2/3 compatibility: PyBytes and PyString
+// https://docs.python.org/2/howto/cporting.html#str-unicode-unification
+//
+
+#include "bytesobject.h"
+
 using namespace khmer;
 
 //
@@ -119,7 +126,7 @@ _debug_class_attrs( PyTypeObject &tobj )
         _trace_logger(
             TraceLogger:: TLVL_DEBUG5,
             "\ttype '%s' dictionary key %d: '%s'\n",
-            tobj.tp_name, pos, PyString_AsString( key )
+            tobj.tp_name, pos, PyBytes_AsString( key )
         );
     }
 #endif // WITH_INTERNAL_TRACING
@@ -226,7 +233,7 @@ _Read_dealloc( PyObject * self )
 
 
 #define KHMER_READ_STRING_GETTER( SELF, ATTR_NAME ) \
-    PyString_FromString( \
+    PyBytes_FromString( \
     ((((Read_Object *)(SELF))->read)->ATTR_NAME).c_str( ) \
     )
 
@@ -1055,8 +1062,8 @@ static PyObject * hash_get(PyObject * self, PyObject * args)
     if (PyInt_Check(arg)) {
         long pos = PyInt_AsLong(arg);
         count = counting->get_count((unsigned int) pos);
-    } else if (PyString_Check(arg)) {
-        std::string s = PyString_AsString(arg);
+    } else if (PyBytes_Check(arg)) {
+        std::string s = PyBytes_AsString(arg);
 
         if (strlen(s.c_str()) != counting->ksize()) {
             PyErr_SetString(PyExc_ValueError,
@@ -1091,7 +1098,7 @@ static PyObject * count_trim_on_abundance(PyObject * self, PyObject * args)
 
     Py_END_ALLOW_THREADS;
 
-    PyObject * trim_seq = PyString_FromStringAndSize(seq, trim_at);
+    PyObject * trim_seq = PyBytes_FromStringAndSize(seq, trim_at);
     if (trim_seq == NULL) {
         return NULL;
     }
@@ -1121,7 +1128,7 @@ static PyObject * count_trim_below_abundance(PyObject * self, PyObject * args)
 
     Py_END_ALLOW_THREADS;
 
-    PyObject * trim_seq = PyString_FromStringAndSize(seq, trim_at);
+    PyObject * trim_seq = PyBytes_FromStringAndSize(seq, trim_at);
     if (trim_seq == NULL) {
         return NULL;
     }
@@ -2111,8 +2118,8 @@ static PyObject * hashbits_get(PyObject * self, PyObject * args)
     if (PyInt_Check(arg)) {
         long pos = PyInt_AsLong(arg);
         count = hashbits->get_count((unsigned int) pos);
-    } else if (PyString_Check(arg)) {
-        std::string s = PyString_AsString(arg);
+    } else if (PyBytes_Check(arg)) {
+        std::string s = PyBytes_AsString(arg);
 
         if (strlen(s.c_str()) < hashbits->ksize()) {
             PyErr_SetString(PyExc_ValueError,
@@ -2190,7 +2197,7 @@ static PyObject * hashbits_trim_on_stoptags(PyObject * self, PyObject * args)
 
     Py_END_ALLOW_THREADS;
 
-    PyObject * trim_seq = PyString_FromStringAndSize(seq, trim_at);
+    PyObject * trim_seq = PyBytes_FromStringAndSize(seq, trim_at);
     if (trim_seq == NULL) {
         return NULL;
     }
@@ -3300,7 +3307,7 @@ static PyObject * hashbits_extract_unique_paths(PyObject * self,
     }
 
     for (unsigned int i = 0; i < results.size(); i++) {
-        PyList_SET_ITEM(x, i, PyString_FromString(results[i].c_str()));
+        PyList_SET_ITEM(x, i, PyBytes_FromString(results[i].c_str()));
     }
 
     return x;
@@ -4565,7 +4572,7 @@ static PyObject * reverse_hash(PyObject * self, PyObject * args)
         return NULL;
     }
 
-    return PyString_FromString(_revhash(val, ksize).c_str());
+    return PyBytes_FromString(_revhash(val, ksize).c_str());
 }
 
 static PyObject * murmur3_forward_hash(PyObject * self, PyObject * args)
@@ -4617,7 +4624,7 @@ get_version_cpp( PyObject * self, PyObject * args )
 #define xstr(s) str(s)
 #define str(s) #s
     std::string dVersion = xstr(VERSION);
-    return PyString_FromString(dVersion.c_str());
+    return PyBytes_FromString(dVersion.c_str());
 }
 
 
