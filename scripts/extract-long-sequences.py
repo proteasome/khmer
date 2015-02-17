@@ -20,6 +20,8 @@ import argparse
 import screed
 import sys
 from khmer.utils import write_record
+from khmer.kfile import add_output_compression_type
+from khmer.kfile import enable_output_compression
 
 
 def get_parser():
@@ -35,11 +37,13 @@ def get_parser():
     parser.add_argument('-l', '--length', help='The minimum length of'
                         ' the sequence file.',
                         type=int, default=200)
+    add_output_compression_type(parser)
     return parser
 
 
 def main():
     args = get_parser().parse_args()
+    enable_output_compression(args)
     outfp = open(args.output, 'w')
     for filename in args.input_filenames:
         for record in screed.open(filename):

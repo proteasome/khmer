@@ -25,6 +25,8 @@ from khmer.khmer_args import (build_counting_args, report_on_config,
                               add_threading_args, info)
 from khmer.kfile import (check_file_status, check_space,
                          check_space_for_hashtable)
+from khmer.kfile import add_output_compression_type
+from khmer.kfile import enable_output_compression
 #
 DEFAULT_CUTOFF = 2
 
@@ -58,12 +60,14 @@ def get_parser():
                         help="Prints the total number of k-mers to stderr")
     parser.add_argument('-f', '--force', default=False, action='store_true',
                         help='Overwrite output file if it exists')
+    add_output_compression_type(parser)
     return parser
 
 
 def main():
     info('filter-abund-single.py', ['counting', 'SeqAn'])
     args = get_parser().parse_args()
+    enable_output_compression(args)
     check_file_status(args.datafile, args.force)
     check_space([args.datafile], args.force)
     if args.savetable:

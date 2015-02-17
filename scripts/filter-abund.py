@@ -23,6 +23,8 @@ from khmer.thread_utils import ThreadedSequenceProcessor, verbose_loader
 from khmer.khmer_args import (ComboFormatter, add_threading_args, info)
 from khmer.kfile import check_file_status, check_space
 from khmer import __version__
+from khmer.kfile import add_output_compression_type
+from khmer.kfile import enable_output_compression
 #
 
 DEFAULT_NORMALIZE_LIMIT = 20
@@ -69,12 +71,14 @@ def get_parser():
                         version='khmer {v}'.format(v=__version__))
     parser.add_argument('-f', '--force', default=False, action='store_true',
                         help='Overwrite output file if it exists')
+    add_output_compression_type(parser)
     return parser
 
 
 def main():
     info('filter-abund.py', ['counting'])
     args = get_parser().parse_args()
+    enable_output_compression(args)
 
     counting_ht = args.input_table
     infiles = args.input_filename

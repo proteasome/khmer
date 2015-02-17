@@ -25,6 +25,8 @@ import argparse
 import textwrap
 import khmer
 from khmer.kfile import check_file_status, check_space
+from khmer.kfile import add_output_compression_type
+from khmer.kfile import enable_output_compression
 from khmer.khmer_args import info
 from khmer.utils import write_record
 
@@ -77,6 +79,7 @@ def get_parser():
                         + khmer.__version__)
     parser.add_argument('-f', '--force', default=False, action='store_true',
                         help='Overwrite output file if it exists')
+    add_output_compression_type(parser)
     return parser
 
 
@@ -84,6 +87,7 @@ def get_parser():
 def main():  # pylint: disable=too-many-locals,too-many-branches
     info('extract-partitions.py', ['graph'])
     args = get_parser().parse_args()
+    enable_output_compression(args)
 
     distfilename = args.prefix + '.dist'
 
