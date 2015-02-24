@@ -27,6 +27,8 @@ from khmer.khmer_args import (build_counting_args, info, add_loadhash_args,
 from khmer.utils import write_record, write_record_pair, broken_paired_reader
 from khmer.kfile import (check_space, check_space_for_hashtable,
                          check_valid_file_exists)
+from khmer.kfile import add_output_compression_type
+from khmer.kfile import enable_output_compression
 
 DEFAULT_NORMALIZE_LIMIT = 20
 DEFAULT_CUTOFF = 2
@@ -95,6 +97,7 @@ def get_parser():
     parser.add_argument('--force', default=False, action='store_true')
     parser.add_argument('--ignore-pairs', default=False, action='store_true')
     parser.add_argument('--tempdir', '-T', type=str, default='./')
+    add_output_compression_type(parser)
 
     return parser
 
@@ -103,6 +106,7 @@ def main():
     info('trim-low-abund.py', ['streaming'])
     parser = get_parser()
     args = parser.parse_args()
+    enable_output_compression(args)
 
     ###
 
