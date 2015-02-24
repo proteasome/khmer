@@ -26,7 +26,6 @@ from khmer.kfile import add_output_compression_type
 from khmer.kfile import enable_output_compression
 
 
-
 def is_pair(name1, name2):
     if name1.endswith('/1') and name2.endswith('/2'):
         subpart1 = name1.split('/')[0]
