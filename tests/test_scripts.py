@@ -1857,16 +1857,13 @@ def test_split_paired_reads_3_output_dir():
     script = scriptpath('split-paired-reads.py')
     args = ['--output-dir', output_dir, infile]
 
-<<<<<<< HEAD
     args = [clean_infile, '--gzip', '-o', clean_outfile]
     (status, out, err) = utils.runscript(script, args, in_dir)
 
     args = [clean_infile, '--bzip', '-o', clean_outfile]
     (status, out, err) = utils.runscript(script, args, in_dir)
 
-=======
     utils.runscript(script, args)
->>>>>>> 43e2217d4078d9c42f1e10df580e074a44c0efaa
 
     assert os.path.exists(outfile1), outfile1
     assert os.path.exists(outfile2), outfile2
