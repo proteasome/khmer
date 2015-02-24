@@ -1,4 +1,9 @@
-#! /usr/bin/env python
+#! /usr/bin/env python2
+# This file is part of khmer, http://github.com/ged-lab/khmer/, and is
+# Copyright (C) Michigan State University, 2013-2014. It is licensed under
+# the three-clause BSD license; see doc/LICENSE.txt.
+# Contact: khmer-project@idyll.org
+
 """
 XXX
 
@@ -59,7 +64,7 @@ def main():
         print 'making hashtable'
         ht = khmer.new_counting_hash(K, HT_SIZE, N_HT)
 
-    aligner = khmer.new_readaligner(ht, args.trusted_cutoff, args.bits_theta)
+    aligner = khmer.ReadAligner(ht, args.trusted_cutoff, args.bits_theta)
             
     if args.details_out != None:
         details_out = open(args.details_out, "w")

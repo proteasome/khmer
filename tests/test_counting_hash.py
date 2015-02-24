@@ -10,6 +10,7 @@ import gzip
 import khmer
 import khmer_tst_utils as utils
 from khmer import ReadParser
+import screed
 
 from nose.plugins.attrib import attr
 
@@ -36,7 +37,7 @@ def teardown():
 class Test_CountingHash(object):
 
     def setup(self):
-        self.hi = khmer._new_counting_hash(12, PRIMES_1m)
+        self.hi = khmer.CountingHash(12, PRIMES_1m)
 
     def test_collision_1(self):
 
@@ -100,11 +101,20 @@ class Test_CountingHash(object):
         assert hi.get(GG) == 2
 
 
+@attr('linux')
+def test_toobig():
+    try:
+        ct = khmer.new_counting_hash(30, 1e13, 1)
+        assert 0, "this should fail"
+    except MemoryError as err:
+        print str(err)
+
+
 def test_3_tables():
     x = list(PRIMES_1m)
     x.append(1000005)
 
-    hi = khmer._new_counting_hash(12, x)
+    hi = khmer.CountingHash(12, x)
 
     GG = 'G' * 12                   # forward_hash: 11184810
     assert khmer.forward_hash(GG, 12) == 11184810
@@ -274,17 +284,17 @@ def test_save_load():
     sizes = list(PRIMES_1m)
     sizes.append(1000005)
 
-    hi = khmer._new_counting_hash(12, sizes)
+    hi = khmer.CountingHash(12, sizes)
     hi.consume_fasta(inpath)
     hi.save(savepath)
 
-    ht = khmer._new_counting_hash(12, sizes)
+    ht = khmer.CountingHash(12, sizes)
     ht.load(savepath)
 
-    tracking = khmer._new_hashbits(12, sizes)
+    tracking = khmer._Hashbits(12, sizes)
     x = hi.abundance_distribution(inpath, tracking)
 
-    tracking = khmer._new_hashbits(12, sizes)
+    tracking = khmer._Hashbits(12, sizes)
     y = ht.abundance_distribution(inpath, tracking)
 
     assert sum(x) == 3966, sum(x)
@@ -301,7 +311,7 @@ def test_load_gz():
     sizes.append(1000005)
 
     # save uncompressed hashtable.
-    hi = khmer._new_counting_hash(12, sizes)
+    hi = khmer.CountingHash(12, sizes)
     hi.consume_fasta(inpath)
     hi.save(savepath)
 
@@ -313,13 +323,13 @@ def test_load_gz():
     in_file.close()
 
     # load compressed hashtable.
-    ht = khmer._new_counting_hash(12, sizes)
+    ht = khmer.CountingHash(12, sizes)
     ht.load(loadpath)
 
-    tracking = khmer._new_hashbits(12, sizes)
+    tracking = khmer._Hashbits(12, sizes)
     x = hi.abundance_distribution(inpath, tracking)
 
-    tracking = khmer._new_hashbits(12, sizes)
+    tracking = khmer._Hashbits(12, sizes)
     y = ht.abundance_distribution(inpath, tracking)
 
     assert sum(x) == 3966, sum(x)
@@ -333,17 +343,17 @@ def test_save_load_gz():
     sizes = list(PRIMES_1m)
     sizes.append(1000005)
 
-    hi = khmer._new_counting_hash(12, sizes)
+    hi = khmer.CountingHash(12, sizes)
     hi.consume_fasta(inpath)
     hi.save(savepath)
 
-    ht = khmer._new_counting_hash(12, sizes)
+    ht = khmer.CountingHash(12, sizes)
     ht.load(savepath)
 
-    tracking = khmer._new_hashbits(12, sizes)
+    tracking = khmer._Hashbits(12, sizes)
     x = hi.abundance_distribution(inpath, tracking)
 
-    tracking = khmer._new_hashbits(12, sizes)
+    tracking = khmer._Hashbits(12, sizes)
     y = ht.abundance_distribution(inpath, tracking)
 
     assert sum(x) == 3966, sum(x)
@@ -742,7 +752,7 @@ def test_counting_gz_file_type_check():
 
 def test_counting_bad_primes_list():
     try:
-        ht = khmer._new_counting_hash(12, ["a", "b", "c"], 1)
+        ht = khmer.CountingHash(12, ["a", "b", "c"], 1)
         assert 0, "bad list of primes should fail"
     except TypeError as e:
         print str(e)
@@ -781,7 +791,7 @@ def test_consume_absentfasta_with_reads_parser():
         assert 0, "this should fail"
     except IOError as err:
         print str(err)
-    except ValueError, err:
+    except ValueError as err:
         print str(err)
 
 
@@ -965,3 +975,70 @@ def test_consume_fasta_and_tag():
     except TypeError as err:
         print str(err)
     countingtable.consume_fasta_and_tag(utils.get_test_data("test-graph2.fa"))
+
+
+def test_consume_and_retrieve_tags_1():
+    ct = khmer.new_counting_hash(4, 4 ** 4, 4)
+
+    # first, for each sequence, build tags.
+    for record in screed.open(utils.get_test_data('test-graph2.fa')):
+        ct.consume_and_tag(record.sequence)
+
+    # check that all the tags in sequences are retrieved by iterating
+    # across the sequence and retrieving by neighborhood.
+
+    ss = set()
+    tt = set()
+    for record in screed.open(utils.get_test_data('test-graph2.fa')):
+        for p, tag in ct.get_tags_and_positions(record.sequence):
+            ss.add(tag)
+
+        for start in range(len(record.sequence) - 3):
+            kmer = record.sequence[start:start + 4]
+            tt.update(ct.find_all_tags_list(kmer))
+
+    assert ss == tt
+
+
+def test_consume_and_retrieve_tags_empty():
+    ct = khmer.new_counting_hash(4, 4 ** 4, 4)
+
+    # load each sequence but do not build tags - everything should be empty.
+    for record in screed.open(utils.get_test_data('test-graph2.fa')):
+        ct.consume(record.sequence)
+
+    # check that all the tags in sequences are retrieved by iterating
+    # across the sequence and retrieving by neighborhood.
+
+    ss = set()
+    tt = set()
+    for record in screed.open(utils.get_test_data('test-graph2.fa')):
+        for p, tag in ct.get_tags_and_positions(record.sequence):
+            ss.add(tag)
+
+        for start in range(len(record.sequence) - 3):
+            kmer = record.sequence[start:start + 4]
+            tt.update(ct.find_all_tags_list(kmer))
+
+    assert not ss
+    assert not tt
+
+
+def test_find_all_tags_list_error():
+    ct = khmer.new_counting_hash(4, 4 ** 4, 4)
+
+    # load each sequence but do not build tags - everything should be empty.
+    for record in screed.open(utils.get_test_data('test-graph2.fa')):
+        ct.consume(record.sequence)
+
+    try:
+        ct.find_all_tags_list("ATA")
+        assert False, "a ValueError should be raised for incorrect k-mer size"
+    except ValueError:
+        pass
+
+    try:
+        ct.find_all_tags_list("ATAGA")
+        assert False, "a ValueError should be raised for incorrect k-mer size"
+    except ValueError:
+        pass

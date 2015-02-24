@@ -1,4 +1,10 @@
-#! /usr/bin/env python
+#! /usr/bin/env python2
+
+# This file is part of khmer, http://github.com/ged-lab/khmer/, and is
+# Copyright (C) Michigan State University, 2013-2015. It is licensed under
+# the three-clause BSD license; see doc/LICENSE.txt.
+# Contact: khmer-project@idyll.org
+
 """
 Error correct reads based on a counting hash from a diginorm step.
 Output sequences will be put in @@@.
@@ -41,7 +47,7 @@ def main():
     ht = khmer.load_counting_hash(counting_ht)
     K = ht.ksize()
 
-    aligner = khmer.new_readaligner(ht, args.trusted_cov, args.theta) # counting hash, trusted kmer coverage cutoff, bits theta (threshold value for terminating unproductive alignemnts)
+    aligner = khmer.ReadAligner(ht, args.trusted_cov, args.theta) # counting hash, trusted kmer coverage cutoff, bits theta (threshold value for terminating unproductive alignemnts)
     
     ### the filtering loop
     for infile in infiles:

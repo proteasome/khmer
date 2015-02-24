@@ -46,7 +46,7 @@ def main():
     enable_output_compression(args)
     outfp = open(args.output, 'w')
     for filename in args.input_filenames:
-        for record in screed.open(filename):
+        for record in screed.open(filename, parse_description=False):
             if len(record['sequence']) >= args.length:
                 write_record(record, outfp)
     print >> sys.stderr, 'wrote to: ' + args.output
