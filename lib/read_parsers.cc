@@ -22,19 +22,17 @@ namespace read_parsers
 {
 
 struct SeqAnParser::Handle {
-    seqan::SequenceStream stream;
+    seqan::SeqFileIn file;
     uint32_t seqan_spin_lock;
 };
 
 SeqAnParser::SeqAnParser( char const * filename ) : IParser( )
 {
-    _private = new SeqAnParser::Handle();
-    seqan::open(_private->stream, filename);
-    if (!seqan::isGood(_private->stream)) {
-        std::string message = "Could not open ";
+    if (!seqan::open(_private->file, filename)) {
+	std::string message = "Could not open ";
         message = message + filename + " for reading.";
         throw InvalidStreamHandle(message.c_str());
-    } else if (seqan::atEnd(_private->stream)) {
+    } else if (seqan::atEnd(_private->file)) {
         std::string message = "File ";
         message = message + filename + " does not contain any sequences!";
         throw InvalidStreamHandle(message.c_str());
@@ -45,32 +43,27 @@ SeqAnParser::SeqAnParser( char const * filename ) : IParser( )
 
 bool SeqAnParser::is_complete()
 {
-    return !seqan::isGood(_private->stream) || seqan::atEnd(_private->stream);
+    return seqan::atEnd(_private->file);
 }
 
 void SeqAnParser::imprint_next_read(Read &the_read)
 {
     the_read.reset();
-    int ret = -1;
-    while (!__sync_bool_compare_and_swap(& _private->seqan_spin_lock, 0, 1));
-    bool atEnd = seqan::atEnd(_private->stream);
-    if (!atEnd) {
-        ret = seqan::readRecord(the_read.name, the_read.sequence,
-                                the_read.quality, _private->stream);
-    }
-    __asm__ __volatile__ ("" ::: "memory");
-    _private->seqan_spin_lock = 0;
-    if (atEnd) {
+    if (seqan::atEnd(_private->file)) {
         throw NoMoreReadsAvailable();
     }
-    if (ret != 0) {
-        throw StreamReadError();
+    else {
+        while (!__sync_bool_compare_and_swap(& _private->seqan_spin_lock, 0, 1));
+	seqan::readRecord(the_read.name, the_read.sequence, the_read.quality,
+		_private->file);
+        __asm__ __volatile__ ("" ::: "memory");
+        _private->seqan_spin_lock = 0;
     }
 }
 
 SeqAnParser::~SeqAnParser()
 {
-    seqan::close(_private->stream);
+    seqan::close(_private->file);
     delete _private;
 }
 
