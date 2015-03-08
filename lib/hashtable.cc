@@ -244,10 +244,12 @@ bool Hashtable::filter_on_median(const std::string &s,
     unsigned int num_cutoff_kmers = 0;
     while(!kmers.done()) {
         HashIntoType kmer = kmers.next();
-        if (this->get_count(kmer) >= cutoff)
+        if (this->get_count(kmer) >= cutoff) {
             ++num_cutoff_kmers;
-        if (num_cutoff_kmers >= min_req)
-            return true;
+            if (num_cutoff_kmers >= min_req) {
+                return true;
+            }
+        }
     }
     return false;
 }
