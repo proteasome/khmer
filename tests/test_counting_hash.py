@@ -182,6 +182,36 @@ def test_simple_median():
     assert average == 2.5
     assert int(stddev * 100) == 50        # .5
 
+def test_filter_on_median():
+    hi = khmer.new_counting_hash(6, 1e6, 2)
+
+    hi.consume("AAAAAA")
+    assert hi.filter_on_median("AAAAAA", 1)
+    assert hi.filter_on_median("AAAAAA", 2) == False
+    
+    hi.consume("AAAAAA")
+    assert hi.filter_on_median("AAAAAA", 2)
+    assert hi.filter_on_median("AAAAAA", 3) == False
+    
+    hi.consume("AAAAAA")
+    assert hi.filter_on_median("AAAAAA", 3)
+    assert hi.filter_on_median("AAAAAA", 4) == False
+
+    hi.consume("AAAAAA")
+    assert hi.filter_on_median("AAAAAA", 4)
+    assert hi.filter_on_median("AAAAAA", 5) == False
+
+    hi.consume("AAAAAA")
+    assert hi.filter_on_median("AAAAAA", 5)
+    assert hi.filter_on_median("AAAAAA", 6) == False
+
+def test_filter_on_median_exception():
+    ht = khmer.new_counting_hash(20, 1e6, 2)
+    try:
+        ht.filter_on_median('ATGGCTGATCGAT', 1)
+        assert 0, "should have thrown ValueError"
+    except ValueError as e:
+        pass
 
 def test_simple_kadian():
     hi = khmer.new_counting_hash(6, 1e6, 2)
