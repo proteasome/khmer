@@ -231,6 +231,27 @@ void Hashtable::get_median_count(const std::string &s,
     median = counts[counts.size() / 2]; // rounds down
 }
 
+//
+// Optimized filter function for normalize-by-median:
+// why do all the count lookups and an expensive sort
+// every time when we can just filter if more than half the
+// kmer counts are above the cutoff?
+//
+bool Hashtable::filter_on_median(const std::string &s,
+                                unsigned int cutoff) {
+    KMerIterator kmers(s.c_str(), _ksize);
+    unsigned int min_req = (s.size() - _ksize + 1) / 2;
+    unsigned int num_cutoff_kmers = 0;
+    while(!kmers.done()) {
+        HashIntoType kmer = kmers.next();
+        if (this->get_count(kmer) >= cutoff)
+            ++num_cutoff_kmers;
+        if (num_cutoff_kmers >= min_req)
+            return true;
+    }
+    return false;
+}
+
 void Hashtable::save_tagset(std::string outfilename)
 {
     ofstream outfile(outfilename.c_str(), ios::binary);

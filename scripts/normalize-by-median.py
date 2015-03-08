@@ -90,9 +90,8 @@ def normalize_by_median(input_filename, outfp, htable, args, report_fp=None):
                 continue
 
             seq = record.sequence.replace('N', 'A')
-            med, _, _ = htable.get_median_count(seq)
 
-            if med < desired_coverage:
+            if not htable.filter_on_median(seq, desired_coverage):
                 htable.consume(seq)
                 passed_filter = True
 
