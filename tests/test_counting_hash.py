@@ -188,23 +188,23 @@ def test_filter_on_median():
 
     hi.consume("AAAAAA")
     assert hi.filter_on_median("AAAAAA", 1)
-    assert hi.filter_on_median("AAAAAA", 2) == False
+    assert hi.filter_on_median("AAAAAA", 2) is False
 
     hi.consume("AAAAAA")
     assert hi.filter_on_median("AAAAAA", 2)
-    assert hi.filter_on_median("AAAAAA", 3) == False
+    assert hi.filter_on_median("AAAAAA", 3) is False
 
     hi.consume("AAAAAA")
     assert hi.filter_on_median("AAAAAA", 3)
-    assert hi.filter_on_median("AAAAAA", 4) == False
+    assert hi.filter_on_median("AAAAAA", 4) is False
 
     hi.consume("AAAAAA")
     assert hi.filter_on_median("AAAAAA", 4)
-    assert hi.filter_on_median("AAAAAA", 5) == False
+    assert hi.filter_on_median("AAAAAA", 5) is False
 
     hi.consume("AAAAAA")
     assert hi.filter_on_median("AAAAAA", 5)
-    assert hi.filter_on_median("AAAAAA", 6) == False
+    assert hi.filter_on_median("AAAAAA", 6) is False
 
 
 def test_filter_on_median_exception():
