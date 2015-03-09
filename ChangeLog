@@ -6,6 +6,69 @@
    * scripts/normalize-by-median.py: Switch to new filter_on_median
    * tests/test_counting_hash.py: Tests for new method
 
+2015-03-08  Michael R. Crusoe  <mcrusoe@msu.edu>
+
+   * Makefile: make 'pep8' target be more verbose
+   * jenkins-build.sh: specify setuptools version
+   * scripts/{abundance-dist,annotate-partitions,count-median,do-partition,
+   extract-paired-reads,extract-partitions,filter-stoptags,find-knots,
+   interleave-reads,merge-partitions,partition-graph,sample-reads-randomly,
+   split-paired-reads}.py,setup.py: fix new PEP8 errors
+   * setup.py: specify that this is a Python 2 only project (for now)
+   * tests/test_{counting_single,subset_graph}.py: make explicit the use of
+   floor division behavior.
+
+2015-03-06  Titus Brown  <titus@idyll.org>
+
+   * sandbox/{collect-reads.py,saturate-by-median.py}: update for 'force'
+   argument in khmer.kfile functions, so that khmer-recipes compile.
+
+2015-03-02  Titus Brown  <titus@idyll.org>
+
+   * sandbox/{combine-pe.py,compare-partitions.py,count-within-radius.py,
+   degree-by-position.py,dn-identify-errors.py,ec.py,error-correct-pass2.py,
+   find-unpart.py,normalize-by-align.py,read-aligner.py,shuffle-fasta.py,
+   to-casava-1.8-fastq.py,uniqify-sequences.py}: removed from sandbox/ as
+   obsolete/unmaintained.
+   * sandbox/README.rst: updated to reflect readstats.py and trim-low-abund.py
+   promotion to sandbox/.
+   * doc/dev/scripts-and-sandbox.txt: updated to reflect sandbox/ script name
+   preferences, and note to remove from README.rst when moved over to scripts/.
+
+2015-02-27  Kevin Murray  <spam@kdmurray.id.au>
+
+   * scripts/load-into-counting.py: Be verbose in the help text, to clarify
+   what the -b flag does.
+
+2015-02-25  Hussien Alameldin  <hussien@msu.edu>
+
+   * sandbox/bloom_count.py: renamed to bloom-count.py
+   * sandbox/bloom_count_intersection.py: renamed to
+     bloom-count-intersection.py
+   * sandbox/read_aligner.py: renamed to read-aligner.py
+
+2015-02-26  Tamer A. Mansour  <drtamermansour@gmail.com>
+
+   * scripts/abundance-dist-single.py: Use CSV format for the histogram.
+   * scripts/count-overlap.py: Use CSV format for the curve file output.
+   Includes column headers.
+   * scripts/abundance-dist-single.py: Use CSV format for the histogram. 
+   Includes column headers.
+   * tests/test_scripts.py: add test functions for the --csv option in
+   abundance-dist-single.py and count-overlap.py
+
+2015-02-26  Jacob Fenton  <bocajnotnef@gmail.com>
+
+   * doc/introduction.txt, doc/user/choosing-table-sizes.txt: Updated docs to
+   ref correct links and names
+
+2015-02-25  Aditi Gupta  <agupta@msu.edu>
+
+   * sandbox/{collect-reads.py, correct-errors.py, 
+   normalize-by-median-pct.py, slice-reads-by-coverage.py, 
+   sweep-files.py, sweep-reads3.py, to-casava-1.8-fastq.py}: 
+   Replaced 'accuracy' with 'quality'. Fixes #787.
+
 2015-02-25  Tamer A. Mansour  <drtamermansour@gmail.com>
 
    * scripts/normalize-by-median.py: change to the default behavior to
