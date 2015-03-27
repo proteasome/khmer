@@ -240,7 +240,7 @@ void Hashtable::get_median_count(const std::string &s,
 bool Hashtable::filter_on_median(const std::string &s,
                                 unsigned int cutoff) {
     KMerIterator kmers(s.c_str(), _ksize);
-    unsigned int min_req = (s.size() - _ksize + 1) / 2;
+    unsigned int min_req = 0.5 + float(s.size() - _ksize + 1) / 2;
     unsigned int num_cutoff_kmers = 0;
     while(!kmers.done()) {
         HashIntoType kmer = kmers.next();
