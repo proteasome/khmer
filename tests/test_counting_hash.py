@@ -239,7 +239,7 @@ def test_filter_on_median():
 def test_filter_on_median_single_gt():
     K = 20
     hi = khmer.new_counting_hash(K, 1e6, 2)
-    
+
     kmers = ['ATCGATCGATCGATCGATCG',
              'GTACGTACGTACGTACGTAC',
              'TTAGTTAGTTAGTTAGTTAG']
@@ -252,7 +252,7 @@ def test_filter_on_median_single_gt():
 def test_filter_on_median_single_lt():
     K = 20
     hi = khmer.new_counting_hash(K, 1e6, 2)
-    
+
     kmers = ['ATCGATCGATCGATCGATCG',
              'GTACGTACGTACGTACGTAC',
              'TTAGTTAGTTAGTTAGTTAG']
@@ -261,13 +261,14 @@ def test_filter_on_median_single_lt():
         hi.consume(kmer)
         assert hi.filter_on_median(kmer, 2) is False
 
+
 def test_filter_on_median_odd_gt():
     K = 20
     hi = khmer.new_counting_hash(K, 1e6, 2)
-    
+
     seqs = ['ATCGATCGATCGATCGATCGCC',
-             'GTACGTACGTACGTACGTACCC',
-             'TTAGTTAGTTAGTTAGTTAGCC']
+            'GTACGTACGTACGTACGTACCC',
+            'TTAGTTAGTTAGTTAGTTAGCC']
 
     for seq in seqs:
         hi.consume(seq)
@@ -277,22 +278,23 @@ def test_filter_on_median_odd_gt():
 def test_filter_on_median_odd_lt():
     K = 20
     hi = khmer.new_counting_hash(K, 1e6, 2)
-    
+
     seqs = ['ATCGATCGATCGATCGATCGCC',
-             'GTACGTACGTACGTACGTACCC',
-             'TTAGTTAGTTAGTTAGTTAGCC']
+            'GTACGTACGTACGTACGTACCC',
+            'TTAGTTAGTTAGTTAGTTAGCC']
 
     for seq in seqs:
         hi.consume(seq)
         assert hi.filter_on_median(seq, 2) is False
 
+
 def test_filter_on_median_even_gt():
     K = 20
     hi = khmer.new_counting_hash(K, 1e6, 2)
-    
+
     seqs = ['ATCGATCGATCGATCGATCGCCC',
-             'GTACGTACGTACGTACGTACCCC',
-             'TTAGTTAGTTAGTTAGTTAGCCC']
+            'GTACGTACGTACGTACGTACCCC',
+            'TTAGTTAGTTAGTTAGTTAGCCC']
 
     for seq in seqs:
         hi.consume(seq)
@@ -302,31 +304,33 @@ def test_filter_on_median_even_gt():
 def test_filter_on_median_even_lt():
     K = 20
     hi = khmer.new_counting_hash(K, 1e6, 2)
-    
+
     seqs = ['ATCGATCGATCGATCGATCGCCC',
-             'GTACGTACGTACGTACGTACCCC',
-             'TTAGTTAGTTAGTTAGTTAGCCC']
+            'GTACGTACGTACGTACGTACCCC',
+            'TTAGTTAGTTAGTTAGTTAGCCC']
 
     for seq in seqs:
         hi.consume(seq)
         assert hi.filter_on_median(seq, 2) is False
 
+
 def test_filter_on_median_comp():
     K = 20
     C = 4
     hi = khmer.new_counting_hash(K, 1e6, 2)
-    
+
     seqs = ['ATCGATCGATCGATCGATCGCCC',
-             'GTACGTACGTACGTACGTACCCC',
-             'TTAGTTAGTTAGTTAGTTAGCCC']
+            'GTACGTACGTACGTACGTACCCC',
+            'TTAGTTAGTTAGTTAGTTAGCCC']
 
     for seq in seqs:
         hi.consume(seq)
         hi.consume(seq)
         hi.consume(seq)
-        
+
         med, _, _ = hi.get_median_count(seq)
-        assert hi.filter_on_median(seq, 4) is  (med >= C)
+        assert hi.filter_on_median(seq, 4) is (med >= C)
+
 
 def test_filter_on_median_exception():
     ht = khmer.new_counting_hash(20, 1e6, 2)
