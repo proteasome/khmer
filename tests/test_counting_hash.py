@@ -207,7 +207,7 @@ def test_filter_on_median():
     assert hi.filter_on_median("AAAAAA", 6) is False
 
 
-def test_filter_on_median_single():
+def test_filter_on_median_single_gt():
     K = 20
     hi = khmer.new_counting_hash(K, 1e6, 2)
     
@@ -218,6 +218,20 @@ def test_filter_on_median_single():
     for kmer in kmers:
         hi.consume(kmer)
         assert hi.filter_on_median(kmer, 1) is True
+
+
+def test_filter_on_median_single_lt():
+    K = 20
+    hi = khmer.new_counting_hash(K, 1e6, 2)
+    
+    kmers = ['ATCGATCGATCGATCGATCG',
+             'GTACGTACGTACGTACGTAC',
+             'TTAGTTAGTTAGTTAGTTAG']
+
+    for kmer in kmers:
+        hi.consume(kmer)
+        assert hi.filter_on_median(kmer, 2) is False
+
 
 def test_filter_on_median_exception():
     ht = khmer.new_counting_hash(20, 1e6, 2)
