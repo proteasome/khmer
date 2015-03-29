@@ -1,10 +1,51 @@
-2015-03-08  Camille Scott  <camille.scott.w@gmail.com>
+2015-03-29  Camille Scott  <camille.scott.w@gmail.com>
 
    * lib/hashtable.{cc,hh}: Add filter_on_median method to check
    if median k-mer count is above a cutoff
    * khmer/_khmermodule.cc: Expose filter_on_median to python-land
    * scripts/normalize-by-median.py: Switch to new filter_on_median
    * tests/test_counting_hash.py: Tests for new method
+
+2015-03-27  Michael R. Crusoe  <mcrusoe@msu.edu>
+
+   * lib/read_parsers.{cc,hh}: Obfuscate SeqAn SequenceStream objects with a
+   wrapper struct, to avoid #include-ing the SeqAn headers.
+   * lib/Makefile: Don't install the SeqAn headers.
+
+2015-03-27  Kevin Murray  <spam@kdmurray.id.au>
+
+   * lib/Makefile: Add libkhmer targets, clean up
+   * lib/get_version.py: Rewrite to use versioneer.py
+   * lib/.gitignore,third-party/.gitignore: Add more compiled outputs
+   * lib/.check_openmp.cc: add source that checks compiler for openmp support.
+   * lib/khmer.pc.in: add pkg-config file for khmer
+
+2015-03-23  Kevin Murray  <spam@kdmurray.id.au>
+
+   * lib/counting.hh: Add CountingHash::n_tables() accessor
+
+2015-03-16  Jessica Mizzi  <mizzijes@msu.edu>
+
+    * khmer/kfile.py: Added file not existing error for system exit
+    * tests/{test_scripts,test_functions}.py: Added tests for
+    check_file_status for file existence and force option
+
+2015-03-15  Kevin Murray  <spam@kdmurray.id.au>  &  Titus Brown  <titus@idyll.org>
+
+   * tests/test_counting_hash.py: Skip get_raw_tables test if python doesn't
+   have the memoryview type/function.
+
+2015-03-11  Erich Schwarz  <ems394@cornell.edu>
+
+   * Added URLs and brief descriptions for khmer-relevant documentation in
+   doc/introduction.txt, pointing to http://khmer-protocols.readthedocs.org and
+   khmer-recipes.readthedocs.org, with brief descriptions of their content.
+
+2015-03-10  Camille Scott  <camille.scott.w@gmail.com>
+
+   * lib/counting.hh, khmer/_khmermodule.cc: Expose the raw tables of
+   count-min sketches to the world of python using a buffer interface.
+   * tests/test_counting_hash.py: Tests of the above functionality.
 
 2015-03-08  Michael R. Crusoe  <mcrusoe@msu.edu>
 
