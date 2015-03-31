@@ -976,8 +976,9 @@ hash_filter_on_median(khmer_KCountingHash_Object * me, PyObject * args)
         return NULL;
     }
 
-    if (counting->filter_on_median(long_str, cutoff))
+    if (counting->filter_on_median(long_str, cutoff)) {
         Py_RETURN_TRUE;
+    }
     Py_RETURN_FALSE;
 
 }
