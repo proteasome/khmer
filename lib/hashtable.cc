@@ -232,12 +232,9 @@ void Hashtable::get_median_count(const std::string &s,
 }
 
 //
-// Optimized filter function for normalize-by-median:
-// why do all the count lookups and an expensive sort
-// every time when we can just filter if more than half the
-// kmer counts are above the cutoff?
+// Optimized filter function for normalize-by-median
 //
-bool Hashtable::filter_on_median(const std::string &s,
+bool Hashtable::median_at_least(const std::string &s,
                                 unsigned int cutoff) {
     KMerIterator kmers(s.c_str(), _ksize);
     unsigned int min_req = 0.5 + float(s.size() - _ksize + 1) / 2;

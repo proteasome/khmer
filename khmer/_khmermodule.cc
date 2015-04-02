@@ -959,7 +959,7 @@ hash_get_max_count(khmer_KCountingHash_Object * me, PyObject * args)
 
 static
 PyObject *
-hash_filter_on_median(khmer_KCountingHash_Object * me, PyObject * args)
+hash_median_at_least(khmer_KCountingHash_Object * me, PyObject * args)
 {
     CountingHash * counting = me->counting;
 
@@ -976,7 +976,7 @@ hash_filter_on_median(khmer_KCountingHash_Object * me, PyObject * args)
         return NULL;
     }
 
-    if (counting->filter_on_median(long_str, cutoff)) {
+    if (counting->median_at_least(long_str, cutoff)) {
         Py_RETURN_TRUE;
     }
     Py_RETURN_FALSE;
@@ -1588,7 +1588,7 @@ static PyMethodDef khmer_counting_methods[] = {
     { "get_min_count", (PyCFunction)hash_get_min_count, METH_VARARGS, "Get the smallest count of all the k-mers in the string" },
     { "get_max_count", (PyCFunction)hash_get_max_count, METH_VARARGS, "Get the largest count of all the k-mers in the string" },
     { "get_median_count", (PyCFunction)hash_get_median_count, METH_VARARGS, "Get the median, average, and stddev of the k-mer counts in the string" },
-    { "filter_on_median", (PyCFunction)hash_filter_on_median, METH_VARARGS, "Return true if the median count is over cutoff; else, return false" },
+    { "median_at_least", (PyCFunction)hash_median_at_least, METH_VARARGS, "Return true if the median count is over cutoff; else, return false" },
     { "get_kadian_count", (PyCFunction)hash_get_kadian_count, METH_VARARGS, "Get the kadian (abundance of k-th rank-ordered k-mer) of the k-mer counts in the string" },
     { "trim_on_abundance", (PyCFunction)count_trim_on_abundance, METH_VARARGS, "Trim on >= abundance" },
     { "trim_below_abundance", (PyCFunction)count_trim_below_abundance, METH_VARARGS, "Trim on >= abundance" },

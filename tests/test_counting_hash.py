@@ -212,31 +212,31 @@ def test_simple_median():
     assert int(stddev * 100) == 50        # .5
 
 
-def test_filter_on_median():
+def test_median_at_least():
     hi = khmer.new_counting_hash(6, 1e6, 2)
 
     hi.consume("AAAAAA")
-    assert hi.filter_on_median("AAAAAA", 1)
-    assert hi.filter_on_median("AAAAAA", 2) is False
+    assert hi.median_at_least("AAAAAA", 1)
+    assert hi.median_at_least("AAAAAA", 2) is False
 
     hi.consume("AAAAAA")
-    assert hi.filter_on_median("AAAAAA", 2)
-    assert hi.filter_on_median("AAAAAA", 3) is False
+    assert hi.median_at_least("AAAAAA", 2)
+    assert hi.median_at_least("AAAAAA", 3) is False
 
     hi.consume("AAAAAA")
-    assert hi.filter_on_median("AAAAAA", 3)
-    assert hi.filter_on_median("AAAAAA", 4) is False
+    assert hi.median_at_least("AAAAAA", 3)
+    assert hi.median_at_least("AAAAAA", 4) is False
 
     hi.consume("AAAAAA")
-    assert hi.filter_on_median("AAAAAA", 4)
-    assert hi.filter_on_median("AAAAAA", 5) is False
+    assert hi.median_at_least("AAAAAA", 4)
+    assert hi.median_at_least("AAAAAA", 5) is False
 
     hi.consume("AAAAAA")
-    assert hi.filter_on_median("AAAAAA", 5)
-    assert hi.filter_on_median("AAAAAA", 6) is False
+    assert hi.median_at_least("AAAAAA", 5)
+    assert hi.median_at_least("AAAAAA", 6) is False
 
 
-def test_filter_on_median_single_gt():
+def test_median_at_least_single_gt():
     K = 20
     hi = khmer.new_counting_hash(K, 1e6, 2)
 
@@ -246,10 +246,10 @@ def test_filter_on_median_single_gt():
 
     for kmer in kmers:
         hi.consume(kmer)
-        assert hi.filter_on_median(kmer, 1) is True
+        assert hi.median_at_least(kmer, 1) is True
 
 
-def test_filter_on_median_single_lt():
+def test_median_at_least_single_lt():
     K = 20
     hi = khmer.new_counting_hash(K, 1e6, 2)
 
@@ -259,10 +259,10 @@ def test_filter_on_median_single_lt():
 
     for kmer in kmers:
         hi.consume(kmer)
-        assert hi.filter_on_median(kmer, 2) is False
+        assert hi.median_at_least(kmer, 2) is False
 
 # Test median with odd number of k-mers
-def test_filter_on_median_odd_gt():
+def test_median_at_least_odd_gt():
     K = 20
     hi = khmer.new_counting_hash(K, 1e6, 2)
 
@@ -272,10 +272,10 @@ def test_filter_on_median_odd_gt():
 
     for seq in seqs:
         hi.consume(seq)
-        assert hi.filter_on_median(seq, 1) is True
+        assert hi.median_at_least(seq, 1) is True
 
 
-def test_filter_on_median_odd_lt():
+def test_median_at_least_odd_lt():
     K = 20
     hi = khmer.new_counting_hash(K, 1e6, 2)
 
@@ -285,11 +285,11 @@ def test_filter_on_median_odd_lt():
 
     for seq in seqs:
         hi.consume(seq)
-        assert hi.filter_on_median(seq, 2) is False
+        assert hi.median_at_least(seq, 2) is False
 
 
 # Test median with even number of k-mers
-def test_filter_on_median_even_gt():
+def test_median_at_least_even_gt():
     K = 20
     hi = khmer.new_counting_hash(K, 1e6, 2)
 
@@ -299,10 +299,10 @@ def test_filter_on_median_even_gt():
 
     for seq in seqs:
         hi.consume(seq)
-        assert hi.filter_on_median(seq, 1) is True
+        assert hi.median_at_least(seq, 1) is True
 
 
-def test_filter_on_median_even_lt():
+def test_median_at_least_even_lt():
     K = 20
     hi = khmer.new_counting_hash(K, 1e6, 2)
 
@@ -312,10 +312,10 @@ def test_filter_on_median_even_lt():
 
     for seq in seqs:
         hi.consume(seq)
-        assert hi.filter_on_median(seq, 2) is False
+        assert hi.median_at_least(seq, 2) is False
 
 
-def test_filter_on_median_comp():
+def test_median_at_least_comp():
     K = 20
     C = 4
     hi = khmer.new_counting_hash(K, 1e6, 2)
@@ -330,13 +330,13 @@ def test_filter_on_median_comp():
         hi.consume(seq)
 
         med, _, _ = hi.get_median_count(seq)
-        assert hi.filter_on_median(seq, C) is (med >= C)
+        assert hi.median_at_least(seq, C) is (med >= C)
 
 
-def test_filter_on_median_exception():
+def test_median_at_least_exception():
     ht = khmer.new_counting_hash(20, 1e6, 2)
     try:
-        ht.filter_on_median('ATGGCTGATCGAT', 1)
+        ht.median_at_least('ATGGCTGATCGAT', 1)
         assert 0, "should have thrown ValueError"
     except ValueError as e:
         pass
