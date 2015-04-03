@@ -1,3 +1,9 @@
+2015-04-05  Michael R. Crusoe  <mcrusoe@msu.edu>
+
+   * lib/count.cc: Make CountingHash::abundance_distribution threadsafe
+   * khmer/_khmermodule.cc: remove newly unnecessary check for exception
+   * tests/test_scripts.py: added test to confirm the above
+
 2015-04-05  Kevin Murray  <spam@kdmurray.id.au>
 
    * lib/read_parsers.{cc,hh}: Work around an issue (#884) in SeqAn 1.4.x
