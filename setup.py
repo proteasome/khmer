@@ -174,7 +174,7 @@ SETUP_METADATA = \
         "url": 'http://ged.msu.edu/',
         "packages": ['khmer', 'khmer.tests'],
         "package_dir": {'khmer.tests': 'tests'},
-        "install_requires": ['screed >= 0.8rc1'],
+        "install_requires": ['screed >= 0.8rc6'],
         # testing screed download link
 
         "extras_require": {':python_version=="2.6"': ['argparse>=1.2.1'],
@@ -250,5 +250,5 @@ Distribution.reinitialize_command = reinitialize_command
 # remove dependency_link once screed is published to actual PyPi
 # pylint: disable=W0142
 setup(cmdclass=CMDCLASS, dependency_links=[
-    "https://testpypi.python.org/pypi/screed/0.8-rc4"],
+    "https://testpypi.python.org/pypi/screed/0.8-rc6"],
     **SETUP_METADATA)
