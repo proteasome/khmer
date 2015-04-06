@@ -1,7 +1,6 @@
 2015-04-06  Sherine Awad  <sherine.awad@gmail.com>
 
-   * tests/test_scripts.py: Test loading of compressed counting table
-   with bigcounts,and test abundance with bigcounts
+  *Return make-coverage.py to sandbox
 
 2015-04-06  Michael R. Crusoe  <mcrusoe@msu.edu>
 
